@@ -3,113 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>★☆★ ВЕЛИКИЙ ЭМО-МАГАЗИН АКТЁРА 2007 ★☆★</title>
+    <title>Носки AKTEP уже в наличии</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Press+Start+2P&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap');
+        :root { --blood:#777; --rust:#333; --static:#ddd; --dim:#888; --void:#050505; }
+        * { box-sizing:border-box; }
+        html { background:#030303; }
         body {
-            background-color: #0d0d0d;
-            background-image: 
-                radial-gradient(#ff007f 15%, transparent 16%),
-                radial-gradient(#00ffff 15%, transparent 16%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
-            color: #00ff00;
-            font-family: 'Comic Sans MS', 'Comic Neue', 'Courier New', cursive, sans-serif;
-            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23ff007f'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>"), auto;
+            background:
+              radial-gradient(ellipse at 50% 18%, rgba(255,255,255,.055), transparent 58%),
+              repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px),
+              #070707 !important;
+            color:#d0d0d0 !important;
+            font-family:'Share Tech Mono','Courier New',monospace;
+            cursor:crosshair; position:relative; isolation:isolate;
+            filter: none
         }
-
-        .retro-box {
-            background: linear-gradient(135deg, #000000 0%, #1a001a 100%);
-            border: 3px ridge #ff007f;
+        body::before {
+            content:""; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.22;
+            background:repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.75) 2px 4px);
+            mix-blend-mode:multiply;
         }
-
-        .gold-box {
-            background: linear-gradient(135deg, #2b1f00 0%, #000000 100%);
-            border: 4px gold ridge;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+        body::after {
+            content:"PLAY  ▶"; position:fixed; top:18px; left:24px; z-index:91; pointer-events:none;
+            color:#f1f1f1; font-size:clamp(14px,2vw,28px); letter-spacing:3px;
+            text-shadow:1px 1px #000, -1px 0 #777; opacity:.9;
         }
-
-        .blink {
-            animation: blinker 0.7s linear infinite;
+        /* Desaturated palette: replace the original pink/purple neon with CRT grayscale. */
+        [class*="pink-"], [class*="purple-"], [class*="cyan-"], [class*="yellow-"],
+        [class*="green-"], [class*="red-"], [class*="blue-"], [class*="orange-"] {
+            color:#d6d6d6 !important; border-color:#777 !important;
+            text-shadow:1px 1px #000 !important;
         }
-
-        @keyframes blinker {
-            50% { opacity: 0; }
+        [class*="bg-pink-"], [class*="bg-purple-"], [class*="bg-cyan-"], [class*="bg-yellow-"],
+        [class*="bg-green-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-orange-"] {
+            background-color:#111 !important;
         }
-
+        .retro-box, .gold-box {
+            background:rgba(7,7,7,.94) !important; border:1px solid #777 !important;
+            box-shadow:0 0 18px rgba(255,255,255,.055), inset 0 0 30px rgba(255,255,255,.025);
+            border-radius:2px !important;
+        }
+        .gold-box { border-color:#aaa !important; box-shadow:0 0 24px rgba(255,255,255,.09); }
+        .pixel-font { font-family:'Share Tech Mono',monospace; }
         .rainbow-text {
-            background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbow 2s linear infinite;
+            color:#e6e6e6 !important; background:none !important; -webkit-text-fill-color:#e6e6e6 !important;
+            text-shadow:2px 0 #555,-2px 0 #aaa; animation:titleSignal 4s steps(1,end) infinite;
         }
-
-        @keyframes rainbow {
-            100% { filter: hue-rotate(360deg); }
+        .blink { animation:blinkSignal 1.8s steps(2,end) infinite; }
+        .btn-2007, .btn-green {
+            background:linear-gradient(#292929,#080808) !important; border:1px solid #aaa !important;
+            color:#eee !important; font-weight:bold; text-shadow:1px 1px #000;
         }
-
-        .runaway-btn {
-            position: absolute;
-            transition: all 0.15s ease-out;
-            z-index: 50;
+        .btn-2007:active, .btn-green:active { background:#444 !important; border-style:inset; }
+        .runaway-btn { position:absolute; transition:all .15s ease-out; z-index:50; }
+        .floating-qr { animation:signalFloat 4s steps(2,end) infinite; }
+        img { filter: none contrast(1.15) brightness(.82); }
+        a, button, select { transition:filter .15s ease,border-color .15s ease; }
+        a:hover, button:hover { filter:brightness(1.5); }
+        button { border-radius:1px !important; }
+        .glitching { animation:screenTear .18s steps(2,end) 2; }
+        .vhs-noise {
+            position:fixed; inset:0; z-index:89; pointer-events:none; opacity:0;
+            background:
+              repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.11) 4px, transparent 5px 8px),
+              linear-gradient(transparent 68%, rgba(255,255,255,.3) 68.2%, transparent 69%),
+              linear-gradient(90deg, rgba(255,255,255,.09), transparent 3%, transparent 97%, rgba(255,255,255,.08));
         }
-
-        .pixel-font {
-            font-family: 'Press Start 2P', monospace;
+        .vhs-noise::after {
+            content:"PM  3:27\\A AUG 23 1997"; white-space:pre; position:absolute; right:5%; top:18px;
+            color:#eee; font-size:clamp(12px,2.3vw,28px); line-height:1.25; text-align:right;
+            text-shadow:1px 1px #000; opacity:.8;
         }
-
-        .btn-2007 {
-            background: linear-gradient(to bottom, #ff66cc 0%, #cc0066 100%);
-            border: 3px outset #ff99dd;
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px black;
+        @keyframes blinkSignal { 0%,88%,100%{opacity:1} 90%,94%{opacity:.25} }
+        @keyframes titleSignal {
+            0%,93%,100%{transform:none;clip-path:inset(0)}
+            94%{transform:translateX(2px);clip-path:inset(20% 0 55% 0)}
+            96%{transform:translateX(-2px);clip-path:inset(60% 0 10% 0)}
         }
-
-        .btn-2007:active {
-            border-style: inset;
+        @keyframes screenTear {
+            0%{transform:translateX(0);filter: none
+            25%{transform:translateX(4px) contrast(1.8)}
+            50%{transform:translateX(-3px) skewX(1deg)}
         }
-
-        .btn-green {
-            background: linear-gradient(to bottom, #66ff66 0%, #009900 100%);
-            border: 3px outset #99ff99;
-            color: black;
-            font-weight: bold;
-        }
-
-        .floating-qr {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            z-index: 100;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes signalFloat { 0%,95%,100%{transform:translateY(0)} 96%{transform:translateY(2px) translateX(-2px)} }
+        @media (prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important} }
     </style>
 </head>
 <body class="p-2 md:p-6 min-h-screen flex flex-col items-center justify-between relative">
+    <div class="vhs-noise" id="vhsNoise" aria-hidden="true"></div>
 
-    <!-- Аудиоэлемент для проигрывания mus.mp3 -->
+    <!-- Аудиоэлемент для проигрывания audio_не_определён.wav -->
     <audio id="bgAudio" src="mus.mp3" loop preload="auto"></audio>
 
     <!-- ПЛАВАЮЩИЙ QR-КОД В УГЛУ ЭКРАНА -->
     <div class="floating-qr bg-black p-2 border-2 border-yellow-400 rounded-lg text-center shadow-lg max-w-[120px]">
-        <p class="text-[9px] text-yellow-300 font-bold blink leading-tight mb-1">🔥 СКАНИРУЙ ИЛИ ПОТЕРЯЕШЬ ШАНС!</p>
+        <p class="text-[9px] text-yellow-300 font-bold blink leading-tight mb-1">НЕИЗВЕСТНЫЙ ФАЙЛ</p>
         <img src="qr.png" alt="QR Code" class="w-20 h-20 mx-auto border border-white" onerror="this.onerror=null; this.src='https://placehold.co/100x100/000/fff?text=QR.PNG';">
-        <p class="text-[8px] text-pink-400 mt-1">QR ДЛЯ ОПЛАТЫ ДУШОЙ</p>
+        <p class="text-[8px] text-pink-400 mt-1">ИСТОЧНИК НЕИЗВЕСТЕН</p>
     </div>
 
     <!-- Верхний колонтитул / Бегущая строка -->
     <header class="w-full max-w-5xl mb-4">
         <div class="bg-black border-2 border-pink-500 p-2 text-yellow-300 font-bold text-lg mb-2 overflow-hidden">
             <marquee behavior="scroll" direction="left" scrollamount="8">
-                ★☆★ ОФИЦИАЛЬНЫЙ САЙТ ВЕЛИКОГО АКТЁРА !!! МЕГА СКИДКА 2007% !!! СУПЕР ЭМО-ГОТ НОСКИ В ПОЛОСКУ !!! УСПЕЙ КУПИТЬ ДО КОНЦА СВЕТА !!! ★☆★
+                АРХИВНАЯ ЗАПИСЬ // 23.08.1997 // КАЧЕСТВО КОПИИ НЕИЗВЕСТНО
             </marquee>
         </div>
 
@@ -118,26 +117,26 @@
             <div class="flex items-center space-x-2">
                 <img src="qr.png" alt="QR" class="w-16 h-16 border-2 border-pink-500 hidden sm:block" onerror="this.onerror=null; this.src='https://placehold.co/80x80/000/fff?text=QR';">
                 <div class="text-left">
-                    <span class="text-[10px] text-yellow-400 font-bold">ОПЛАТА ПО QR</span>
-                    <p class="text-[9px] text-gray-400">Наведи раскладушку</p>
+                    <span class="text-[10px] text-yellow-400 font-bold">НЕИЗВЕСТНЫЙ ИСТОЧНИК</span>
+                    <p class="text-[9px] text-gray-400">Не приближай экран</p>
                 </div>
             </div>
 
             <div>
                 <h1 class="text-3xl md:text-5xl font-extrabold rainbow-text tracking-wider mb-2">
-                    ★ 2007-SOCK-STORE.RU.TK ★
+                    Носки AKTEP
                 </h1>
                 <p class="text-pink-400 text-sm md:text-base blink">
-                    === Магазин Носков от Легендарного Создателя АК ТЁ Р А ===
+                    Запись с неизвестного источника
                 </p>
             </div>
 
-            <!-- Плеер музыки mus.mp3 -->
+            <!-- Плеер музыки audio_не_определён.wav -->
             <div class="bg-gray-900 border-2 border-cyan-400 p-2 flex flex-col items-center rounded">
-                <span class="text-[10px] text-cyan-300 pixel-font mb-1">♫ PLAYER:</span>
-                <span class="text-[10px] text-yellow-400 truncate max-w-[140px] mb-1">mus.mp3</span>
+                <span class="text-[10px] text-cyan-300 pixel-font mb-1">КАССЕТА:</span>
+                <span class="text-[10px] text-yellow-400 truncate max-w-[140px] mb-1">audio_не_определён.wav</span>
                 <button onclick="toggleAudio()" id="playBtn" class="bg-pink-600 text-white text-xs px-3 py-1 rounded border border-white hover:bg-pink-500 font-bold">
-                    ▶ PLAY MUSIC
+                    ▶ ВОСПРОИЗВЕСТИ
                 </button>
             </div>
         </div>
@@ -147,14 +146,14 @@
     <section class="w-full max-w-5xl mb-6">
         <div class="gold-box p-6 rounded-xl text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 bg-yellow-400 text-black font-black px-4 py-1 text-xs uppercase tracking-widest rounded-bl-lg">
-                👑 ВЕЛИКИЙ ЛИДЕР И ГЕНИЙ
+                ВЕЛИКИЙ ЛИДЕР И ГЕНИЙ
             </div>
 
             <h2 class="text-2xl md:text-4xl font-extrabold text-yellow-300 tracking-wider mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                👑 ВЕЛИКИЙ АКТЁР 👑
+                 ВЕЛИКИЙ АКТЁР 
             </h2>
             <p class="text-xs md:text-sm text-pink-400 font-bold mb-4 uppercase tracking-widest">
-                Основатель Носочной Империи, Отец Всех Полосок, Повелитель Эмо-Стиля
+                Основатель Империи Крутого Пидораса, Отец Всех Сыновей, Повелитель Стиля
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -166,7 +165,7 @@
 
                 <!-- ГИГАНТСКОЕ ФОТО АКТЁРА -->
                 <div class="relative group mx-auto">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-pink-500 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                    <div class="absolute -inset-1 bg-gradient-to-r from-white-400 via-white-500 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
                     <div class="relative bg-black p-2 rounded-lg border-4 border-yellow-400">
                         <img src="me.png" alt="Актёр - Создатель носков" class="w-64 md:w-80 h-auto mx-auto object-contain drop-shadow-[0_0_25px_rgba(255,215,0,0.9)] transition-transform duration-300 hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/300x400/ff007f/ffffff?text=АКТЁР+(me.png)';">
                     </div>
@@ -175,13 +174,13 @@
                 <!-- Текст расхваления Справа -->
                 <div class="bg-black/80 p-4 border-2 border-yellow-500/80 rounded text-left space-y-2">
                     <p class="text-xs text-yellow-200 leading-relaxed">
-                        ✨ <b class="text-yellow-400">АКТЁР</b> — это не просто человек. Это титан мысли, легенда 2007 года и величайший дизайнер носков в истории человечества!
+                         <b class="text-yellow-400">АКТЁР</b> — это не просто человек. Это титан мысли, легенда 2026 года и величайший дизайнер носков в истории человечества!
                     </p>
                     <p class="text-xs text-pink-300 leading-relaxed">
-                        😭 Он лично вручную вышивал каждую полоску на этих носках и <b class="text-pink-400">ПЛАКАЛ НАД КАЖДЫМ ШВОМ</b>, чтобы передать вам настоящую эмоцию!
+                         Он лично вручную вышивал каждую полоску на этих носках и <b class="text-pink-400">ПЛАКАЛ НАД КАЖДЫМ ШВОМ</b>, чтобы передать вам настоящие эмоции!
                     </p>
                     <p class="text-xs text-cyan-300 leading-relaxed">
-                        ⚡ Говорят, если надеть носки от Актёра, у вас автоматически вырастет скошенная чёлка, а в плеере заиграет Amatory!
+                         Говорят, если надеть носки от Актёра, у вас автоматически включится его трек SLAFF!
                     </p>
                     <div class="pt-2 text-center">
                         <span class="bg-yellow-400 text-black font-extrabold text-xs px-3 py-1 rounded inline-block animate-bounce">
@@ -193,31 +192,32 @@
         </div>
     </section>
 
+
     <!-- Главный контейнер -->
     <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 my-2">
         
         <!-- Сайдбар слева -->
         <aside class="retro-box p-4 flex flex-col space-y-4 text-xs">
             <div class="border-b-2 border-pink-500 pb-2">
-                <h3 class="text-pink-500 font-bold text-base mb-1">★ НАВИГАЦИЯ ★</h3>
+                <h3 class="text-pink-500 font-bold text-base mb-1">СОДЕРЖАНИЕ</h3>
                 <ul class="space-y-1 text-cyan-300 underline">
-                    <li><a href="#" onclick="alert('Вы уже на главной странице Актёра!')">-> Главная страница</a></li>
-                    <li><a href="#" onclick="alert('Все остальные носки сгорели от гениальности Актёра!')">-> Каталог носков (1)</a></li>
-                    <li><a href="#" onclick="alert('Наш ICQ: 200-700-200 (Личный аська Актёра)')">-> Контакты / ICQ</a></li>
-                    <li><a href="#" onclick="alert('Принимаем: QR-коды, карточки WebMoney, автографы Актёра')">-> Способы оплаты</a></li>
+                    <li><a href="#" onclick="alert('Вы уже на главной странице Актёра!')">-> Кадр 01</a></li>
+                    <li><a href="#" onclick="alert('Все остальные носки сгорели от гениальности Актёра!')">-> Неизвестный объект</a></li>
+                    <li><a href="#" onclick="alert('Наш ICQ: 200-700-200 (Личный аська Актёра)')">-> Источник сигнала</a></li>
+                    <li><a href="#" onclick="alert('Принимаем: QR-коды, карточки WebMoney, автографы Актёра')">-> Протокол доступа</a></li>
                 </ul>
             </div>
 
             <!-- Дополнительный QR блок в сайдбаре -->
             <div class="bg-black p-3 border-2 border-pink-500 text-center rounded">
-                <p class="text-pink-400 font-bold mb-1">QR-КОД НА БЛАГОСЛОВЕНИЕ</p>
+                <p class="text-pink-400 font-bold mb-1">ФРАГМЕНТ ЗАПИСИ</p>
                 <img src="qr.png" alt="QR" class="w-28 h-28 mx-auto border border-cyan-400 my-1" onerror="this.onerror=null; this.src='https://placehold.co/120x120/000/fff?text=QR';">
-                <p class="text-[9px] text-gray-400">Отсканируй для быстрой покупки</p>
+                <p class="text-[9px] text-gray-400">Источник не подтверждён</p>
             </div>
 
             <!-- Счетчик посетителей -->
             <div class="bg-black p-2 border border-green-500 text-center">
-                <p class="text-gray-400 mb-1">ПОКЛОННИКОВ АКТЁРА:</p>
+                <p class="text-gray-400 mb-1">ОТКРЫТИЙ ФАЙЛА:</p>
                 <div class="pixel-font text-lg text-red-500 bg-gray-950 p-1 tracking-widest border border-red-900 inline-block">
                     00<span id="visitorCount">7777</span>
                 </div>
@@ -226,7 +226,7 @@
             <!-- Чат -->
             <div class="text-center space-y-2 pt-2">
                 <div class="bg-pink-900 text-pink-200 p-2 text-[10px] border border-pink-400">
-                    ЧАТ ФАНАТОВ АКТЁРА:<br>
+                    ЗАМЕТКИ К ЗАПИСИ:<br>
                     <span class="text-yellow-300">xX_B133D_Xx:</span> АКТЁР ЛУЧШИЙ СОЗДАТЕЛЬ НОСКОВ В МИРЕ!!
                 </div>
             </div>
@@ -237,11 +237,11 @@
             <div>
                 <!-- Заголовок товара -->
                 <div class="border-b-2 border-pink-500 pb-2 mb-4">
-                    <span class="bg-yellow-300 text-black font-bold text-xs px-2 py-0.5 rounded">ШЕДЕВР ОТ АКТЁРА</span>
+                    <span class="bg-yellow-300 text-black font-bold text-xs px-2 py-0.5 rounded">ФРАГМЕНТ АРХИВА</span>
                     <h2 class="text-xl md:text-2xl font-bold text-pink-400 mt-1">
-                        ЭМО-НОСКИ В ПОЛОСКУ С ГРУСТНЫМ ЧЕЛОВЕЧКОМ
+                        ОБЪЕКТ В КАДРЕ: НЕИЗВЕСТЕН
                     </h2>
-                    <p class="text-xs text-gray-400">(ЛИМИТИРОВАННАЯ КОЛЛЕКЦИЯ "СЛЕЗЫ АКТЁРА 2007")</p>
+                    <p class="text-xs text-gray-400">(МЕТКА: 07-Б / ДАТА НЕИЗВЕСТНА)</p>
                 </div>
 
                 <!-- Контент товара: Изображение + Описание -->
@@ -250,42 +250,42 @@
                     <!-- Изображение носка sok.png -->
                     <div class="bg-black p-4 border-2 border-pink-500 rounded-lg flex flex-col justify-center items-center relative group">
                         <div class="absolute top-2 left-2 bg-red-600 text-white text-[10px] px-1 font-bold animate-bounce z-10">
-                            100% АКТЁР APPROVED
+                            НЕТ ДАННЫХ
                         </div>
                         
-                        <img src="sok.png" alt="Эмо носки в полоску" class="max-w-full h-auto max-h-[240px] object-contain drop-shadow-[0_0_12px_rgba(255,0,127,0.7)]" onerror="this.onerror=null; this.src='https://placehold.co/200x260/000000/ff007f?text=sok.png+не+найден';">
+                        <img src="sok.png" alt="Эмо носки в полоску" class="max-w-full h-auto max-h-[240px] object-contain drop-shadow-[0_0_12px_rgba(255,0,21,0.8)]" onerror="this.onerror=null; this.src='https://placehold.co/200x260/000000/ff007f?text=sok.png+не+найден';">
 
                         <!-- QR код под носком -->
                         <div class="mt-2 flex items-center space-x-2 bg-gray-900 p-1 border border-pink-400 w-full justify-center">
                             <img src="qr.png" alt="QR" class="w-8 h-8" onerror="this.onerror=null; this.src='https://placehold.co/40x40/000/fff?text=QR';">
-                            <span class="text-[9px] text-yellow-300">QR-код именно этого носка</span>
+                            <span class="text-[9px] text-yellow-300">ФАЙЛ ПОВРЕЖДЁН</span>
                         </div>
                     </div>
 
                     <!-- Описание и Цена -->
                     <div class="space-y-3">
                         <div class="bg-black p-3 border border-yellow-400">
-                            <p class="text-xs text-gray-400 line-through">СТАРАЯ ЦЕНА: 1337 руб.</p>
+                            <p class="text-xs text-gray-400 line-through">ПРЕДЫДУЩАЯ МЕТКА: [УДАЛЕНО]</p>
                             <p class="text-2xl font-extrabold text-green-400 blink">
-                                ЦЕНА: 899 руб.!
+                                ЦЕНА: 899 руб.
                             </p>
-                            <p class="text-[10px] text-pink-400 mt-1">* Доставка лично Актёром или через ИК-порт</p>
+                            <p class="text-[10px] text-pink-400 mt-1">* Доставка не зафиксирована</p>
                         </div>
 
                         <ul class="text-xs space-y-1 text-gray-300 list-disc list-inside">
-                            <li>Состав: 80% Полоски, 20% Слезы Актёра</li>
-                            <li>Согревают даже самое разбитое сердце</li>
-                            <li>Лично освящено Актёром на концерте</li>
-                            <li>Размер: Универсальный эмо-размер</li>
+                            <li>Состав: данные повреждены</li>
+                            <li>Параметры не указаны</li>
+                            <li>Источник не указан</li>
+                            <li>Размер: универсальный</li>
                         </ul>
 
                         <!-- Выбор размера -->
                         <div class="text-xs">
-                            <label class="text-pink-400 font-bold block mb-1">Выбери свой стиль:</label>
+                            <label class="text-pink-400 font-bold block mb-1">ВЫБЕРИ РАЗМЕР:</label>
                             <select class="bg-black text-cyan-300 border border-pink-500 p-1 w-full rounded">
-                                <option>36-42 (Обычный Эмо-боут)</option>
-                                <option>42-45 (Тру-Готика)</option>
-                                <option>Размер как у Актёра (+500р)</option>
+                                <option>36–42</option>
+                                <option>42–45</option>
+                                <option>Другой размер</option>
                             </select>
                         </div>
                     </div>
@@ -294,33 +294,33 @@
                 <!-- БЛОК ТУПЫХ КНОПОК ПОКУПКИ -->
                 <div class="mt-6 border-t-2 border-pink-500 pt-4">
                     <p class="text-xs font-bold text-yellow-300 mb-2 text-center">
-                        === ВЫБЕРИ СПОСОБ ПОКУПКИ (ЖМИ СКОРЕЕ) ===
+                        === ВЫБЕРИ ДЕЙСТВИЕ ===
                     </p>
 
                     <!-- Зона для убегающей кнопки -->
                     <div id="runawayArea" class="relative h-16 w-full bg-black/40 border border-dashed border-pink-500 rounded mb-3 flex items-center justify-center overflow-hidden">
-                        <span class="text-[10px] text-gray-500">Попробуй поймать главную кнопку:</span>
-                        <button id="runawayBtn" onmouseover="moveButton()" onclick="alert('КАК ТЫ ЕЁ ПОЙМАЛ?! ТЫ ЧИТЕР!')" class="runaway-btn btn-2007 px-4 py-2 text-sm rounded cursor-pointer">
-                            🛒 КУПИТЬ ПРЯМО СЕЙЧАС!
+                        <span class="text-[10px] text-gray-500">КНОПКА ПЕРЕМЕЩАЕТСЯ</span>
+                        <button id="runawayBtn" onmouseover="moveButton()" onclick="alert('Не удалось открыть файл.')" class="runaway-btn btn-2007 px-4 py-2 text-sm rounded cursor-pointer">
+                            КУПИТЬ
                         </button>
                     </div>
 
                     <!-- Другие абсурдные кнопки -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <button onclick="buySuccess('НЕ КУПИТЬ')" class="btn-green p-2 text-xs rounded hover:brightness-110">
-                            ❌ НЕ КУПИТЬ (Точно не нажимать!)
+                            НЕ ПОКУПАТЬ
                         </button>
 
                         <button onclick="buyDota()" class="bg-purple-900 border-2 border-purple-400 text-purple-200 p-2 text-xs rounded font-bold hover:bg-purple-800">
-                            🎮 КУПИТЬ ЗА DOTA 2 ШМОТКИ
+                            ПРОВЕРИТЬ ФАЙЛ
                         </button>
 
                         <button onclick="buyCredit()" class="bg-red-900 border-2 border-red-500 text-yellow-300 p-2 text-xs rounded font-bold hover:bg-red-800">
-                            📜 ОФОРМИТЬ В КРЕДИТ НА 50 ЛЕТ
+                            ПОПОЛНИТЬ БАЛАНС СКИНАМИ
                         </button>
 
                         <button onclick="openEmoCaptcha()" class="bg-cyan-900 border-2 border-cyan-400 text-cyan-200 p-2 text-xs rounded font-bold hover:bg-cyan-800">
-                            🖤 ПРОЙТИ ЭМО-КАПЧУ И КУПИТЬ
+                            ПОПОЛНИТЬ БАЛАНС КРИПТОЙ
                         </button>
                     </div>
                 </div>
@@ -328,10 +328,10 @@
 
             <!-- Баннеры эпохи -->
             <div class="mt-6 pt-3 border-t border-gray-800 flex flex-wrap justify-center gap-2">
-                <span class="bg-blue-900 text-white text-[9px] px-2 py-1 border border-blue-400">Actor Fan Club 2007</span>
-                <span class="bg-gray-800 text-green-400 text-[9px] px-2 py-1 border border-green-500">IE 6.0 Optimized</span>
-                <span class="bg-yellow-800 text-yellow-200 text-[9px] px-2 py-1 border border-yellow-500">HTML 4.01 Valid</span>
-                <span class="bg-pink-900 text-pink-200 text-[9px] px-2 py-1 border border-pink-500">800x600 Res</span>
+                <span class="bg-blue-900 text-white text-[9px] px-2 py-1 border border-blue-400">ARCHIVE_07</span>
+                <span class="bg-gray-800 text-green-400 text-[9px] px-2 py-1 border border-green-500">SIGNAL LOST</span>
+                <span class="bg-yellow-800 text-yellow-200 text-[9px] px-2 py-1 border border-yellow-500">FRAME CORRUPTED</span>
+                <span class="bg-pink-900 text-pink-200 text-[9px] px-2 py-1 border border-pink-500">TAPE 04:17</span>
             </div>
         </section>
     </main>
@@ -341,26 +341,25 @@
         <div class="retro-box p-4 md:p-6">
             <div class="flex justify-between items-center border-b-2 border-pink-500 pb-2 mb-4">
                 <h3 class="text-pink-500 font-bold text-base md:text-lg">
-                    💬 ВОСТОРЖЕННЫЕ ОТЗЫВЫ О НОСКАХ И АКТЁРЕ (Гостевая книга 2007):
+                    💬 ОТЗЫВЫ ПОСЕТИТЕЛЕЙ
                 </h3>
-                <span class="text-xs text-yellow-300">Всего отзывов: 1337</span>
+                <span class="text-xs text-yellow-300">ОТЗЫВОВ: 06</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                 
                 <div class="bg-black/80 p-3 border-l-4 border-pink-500 rounded">
                     <div class="flex justify-between text-yellow-400 font-bold mb-1">
-                        <span>xX_Goth_Queen_Xx</span>
+                        <span>operator_03</span>
                         <span class="text-gray-500 text-[10px]">17.10.2007 19:02</span>
                     </div>
                     <p class="text-gray-300">
-                        Актёр просто БОГ!! Купила носки за 899р, они настолько прекрасны, что я рыдала 3 часа под альбом Stigmata! Вся моя челка в слезах счастья!
-                    </p>
+                        Поддержка не ответила на сообщение. Осталось неприятное впечатление.</p>
                 </div>
 
                 <div class="bg-black/80 p-3 border-l-4 border-cyan-500 rounded">
                     <div class="flex justify-between text-cyan-400 font-bold mb-1">
-                        <span>Блейзер2007</span>
+                        <span>cam_02</span>
                         <span class="text-gray-500 text-[10px]">16.10.2007 22:15</span>
                     </div>
                     <p class="text-gray-300">
@@ -370,7 +369,7 @@
 
                 <div class="bg-black/80 p-3 border-l-4 border-purple-500 rounded">
                     <div class="flex justify-between text-purple-400 font-bold mb-1">
-                        <span>MC_Полоска_2007</span>
+                        <span>unknown_user</span>
                         <span class="text-gray-500 text-[10px]">15.10.2007 14:40</span>
                     </div>
                     <p class="text-gray-300">
@@ -380,7 +379,7 @@
 
                 <div class="bg-black/80 p-3 border-l-4 border-green-500 rounded">
                     <div class="flex justify-between text-green-400 font-bold mb-1">
-                        <span>Скейтер_Дима</span>
+                        <span>tape_recovery</span>
                         <span class="text-gray-500 text-[10px]">14.10.2007 11:05</span>
                     </div>
                     <p class="text-gray-300">
@@ -390,7 +389,7 @@
 
                 <div class="bg-black/80 p-3 border-l-4 border-yellow-500 rounded">
                     <div class="flex justify-between text-yellow-300 font-bold mb-1">
-                        <span>Папич_2007</span>
+                        <span>signal_17</span>
                         <span class="text-gray-500 text-[10px]">12.10.2007 03:22</span>
                     </div>
                     <p class="text-gray-300">
@@ -400,7 +399,7 @@
 
                 <div class="bg-black/80 p-3 border-l-4 border-red-500 rounded">
                     <div class="flex justify-between text-red-400 font-bold mb-1">
-                        <span>Саша_Ювелир</span>
+                        <span>last_viewer</span>
                         <span class="text-gray-500 text-[10px]">10.10.2007 18:50</span>
                     </div>
                     <p class="text-gray-300">
@@ -416,30 +415,30 @@
     <footer class="w-full max-w-5xl text-center text-[11px] text-gray-500 py-6 border-t border-pink-900 flex flex-col items-center space-y-3">
         <div class="flex items-center space-x-4">
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
-            <p class="text-pink-400 font-bold">Официальный QR-код поддержки Актёра</p>
+            <p class="text-pink-400 font-bold">Обратная связь</p>
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
         </div>
-        <p>© 2007 EmoSocks Inc. Все права защищены Чёлкой Актёра.</p>
-        <p class="text-pink-600">Сайт создан на narod.ru / Ucoz / Geocities специально для ВЕЛИКОГО АКТЁРА</p>
+        <p>© ARCHIVE 07-Б // КОПИЯ НЕ СОВПАДАЕТ С ОРИГИНАЛОМ</p>
+        <p class="text-pink-600">Архивная копия. Источник не установлен.</p>
     </footer>
 
     <!-- Поп-ап / Модалка Эмо-капчи -->
     <div id="captchaModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <div class="retro-box p-6 max-w-sm w-full border-4 border-pink-500 text-center">
-            <h3 class="text-pink-500 font-bold text-lg mb-4">🖤 ПРОВЕРКА НА ЭМО 🖤</h3>
-            <p class="text-xs text-gray-300 mb-4">Ответь честно, чтобы завершить заказ носков Актёра:</p>
+            <h3 class="text-pink-500 font-bold text-lg mb-4">ПРОВЕРКА ДОСТУПА</h3>
+            <p class="text-xs text-gray-300 mb-4">Подтвердите действие.</p>
             
-            <p class="text-sm font-bold text-yellow-300 mb-4">Вы верите в Великого Актёра?</p>
+            <p class="text-sm font-bold text-yellow-300 mb-4">Вы знакомы с этой записью?</p>
 
             <div class="space-y-2">
                 <button onclick="finishCaptcha(true)" class="w-full btn-2007 p-2 text-xs rounded">
-                    ДА, АКТЁР МОЙ КУМИР (ПЛАЧУ В УГЛУ)
+                    Да
                 </button>
                 <button onclick="finishCaptcha(true)" class="w-full btn-2007 p-2 text-xs rounded">
-                    ОЧЕНЬ ДА (СЛУШАЮ MUS.MP3)
+                    Не уверен
                 </button>
                 <button onclick="finishCaptcha(false)" class="w-full bg-gray-800 text-gray-400 p-2 text-xs rounded border border-gray-600">
-                    НЕТ, Я НЕ ВЕРЮ В АКТЁРА
+                    Нет
                 </button>
             </div>
         </div>
@@ -447,7 +446,27 @@
 
     <!-- JavaScript для интерактива -->
     <script>
-        // Убегающая кнопка "КУПИТЬ"
+        // Краткие VHS-срывы сигнала: без звука и без вмешательства в управление.
+        const vhsNoise = document.getElementById('vhsNoise');
+        function tapeGlitch() {
+            document.body.classList.add('glitching');
+            if (vhsNoise) {
+                vhsNoise.style.opacity = String(0.18 + Math.random() * 0.35);
+                vhsNoise.style.transform = `translateY(${Math.floor(Math.random() * 12 - 6)}px)`;
+            }
+            window.setTimeout(() => {
+                document.body.classList.remove('glitching');
+                if (vhsNoise) {
+                    vhsNoise.style.opacity = '0';
+                    vhsNoise.style.transform = 'none';
+                }
+            }, 180 + Math.random() * 220);
+        }
+        window.setInterval(() => {
+            if (Math.random() > 0.58) tapeGlitch();
+        }, 4200);
+
+        // Убегающая кнопка "ОТКРЫТЬ"
         function moveButton() {
             const btn = document.getElementById('runawayBtn');
             const area = document.getElementById('runawayArea');
@@ -465,42 +484,42 @@
             btn.style.top = newY + 'px';
         }
 
-        // Включение/пауза муз. трека mus.mp3
+        // Включение/пауза муз. трека audio_не_определён.wav
         function toggleAudio() {
             const audio = document.getElementById('bgAudio');
             const btn = document.getElementById('playBtn');
 
             if (audio.paused) {
                 audio.play().then(() => {
-                    btn.innerText = "❚❚ PAUSE";
+                    btn.innerText = "❚❚ ПАУЗА";
                     btn.classList.replace('bg-pink-600', 'bg-green-600');
                 }).catch(err => {
-                    alert("Ошибка воспроизведения mus.mp3! Убедитесь, что файл mus.mp3 лежит рядом с html страницей.");
+                    alert("Ошибка воспроизведения audio_не_определён.wav! Убедитесь, что файл audio_не_определён.wav лежит рядом с html страницей.");
                 });
             } else {
                 audio.pause();
-                btn.innerText = "▶ PLAY MUSIC";
+                btn.innerText = "▶ ВОСПРОИЗВЕСТИ";
                 btn.classList.replace('bg-green-600', 'bg-pink-600');
             }
         }
 
         // Покупка через "НЕ КУПИТЬ"
         function buySuccess(type) {
-            alert("🎉 ПОЗДРАВЛЯЕМ!\n\nВы нажали «" + type + "», но система Актёра сработала наоборот!\n\nВы успешно купили 100 ПАР ЭМО-НОСКОВ ОТ АКТЁРА!\nСумма списания: 89 900 руб.\nНоски уже высланы вам по почте ICQ!");
+            alert("ОШИБКА ПРОТОКОЛА.\n\nДействие: " + type + "\nФайл добавлен в архив. Источник не подтверждён.");
         }
 
         // Покупка за Dota 2 шмотки
         function buyDota() {
-            const item = prompt("Введите название вашего Arcana или ДК Хука для обмена с Актёром:");
+            const item = prompt("Введите код фрагмента для расшифровки:");
             if (item) {
-                alert("Обмен принят! Предмет '" + item + "' передан боту Актёра.\n\nВаши носки отправлены!");
+                alert("ФРАГМЕНТ '" + item + "' принят.\n\nСодержимое не удалось проверить.");
             }
         }
 
         // Кредит на 50 лет
         function buyCredit() {
-            confirm("Вы оформляете кредит на 50 лет под 2007% годовых в Банке Актёра.\nВаши внуки будут доплачивать за эти носки.\n\nВы согласны?");
-            alert("Кредит одобрен Актёром лично! Забирайте носочки!");
+            confirm("ПРОДОЛЖИТЬ ДОСТУПА?\n\nПосле подтверждения запись нельзя будет считать оригиналом.");
+            alert("Действие подтверждено.");
         }
 
         // Эмо-Капча
@@ -511,9 +530,9 @@
         function finishCaptcha(isEmo) {
             document.getElementById('captchaModal').classList.add('hidden');
             if (isEmo) {
-                alert("Проверка пройдена! Вы настоящий фанат Актёра!\n\nНоски добавлены в вашу розово-черную сумку!");
+                alert("Проверка пройдена.\n\nВ журнале появилась новая строка.");
             } else {
-                alert("ОШИБКА! Актёр опечален вашим ответом. Попробуйте послушать mus.mp3 и повторить!");
+                alert("ОШИБКА! Актёр опечален вашим ответом. Попробуйте послушать audio_не_определён.wav и повторить!");
             }
         }
 
