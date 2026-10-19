@@ -98,6 +98,30 @@
         }
         .glitch-btn:hover { background: #ff0055; color: #000; text-shadow: none; box-shadow: 0 0 20px rgba(255,0,85,0.9); }
 
+        /* Эффекты для ника МОДЕРАТОР */
+        .mod-glitch-nickname {
+            color: #ff0055 !important;
+            font-weight: 900;
+            text-shadow: 0 0 8px #ff0055, 0 0 20px #00ffff, 2px 2px #000;
+            display: inline-block;
+            animation: modShake 0.15s infinite ease-in-out, modColorGlow 1s infinite alternate;
+        }
+
+        @keyframes modShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-2px, 2px) rotate(-1deg); }
+            40% { transform: translate(2px, -1px) rotate(1deg); }
+            60% { transform: translate(-1px, -2px) rotate(0deg); }
+            80% { transform: translate(2px, 2px) rotate(-1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes modColorGlow {
+            0% { color: #ff0055; text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055; }
+            50% { color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+            100% { color: #ffff00; text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00; }
+        }
+
         @keyframes glitchText {
             0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) }
             40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) }
@@ -477,6 +501,17 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // --- Функция генерации уникального цвета для ника ---
+        function getNicknameColor(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            // Используем цветовой тон (hue) от 0 до 360, фиксированную насыщенность и яркость для читаемости
+            const hue = Math.abs(hash) % 360;
+            return `hsl(${hue}, 85%, 65%)`;
+        }
+
         // --- ЛОГИКА ЧАТА ---
         function sendChatMessage() {
             const user = document.getElementById('chatUser').value.trim();
@@ -509,7 +544,18 @@
 
             Object.values(data).forEach(msg => {
                 const p = document.createElement('p');
-                p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> <strong class="text-yellow-300">${escapeHtml(msg.user)}</strong>: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
+                const cleanUser = escapeHtml(msg.user);
+                
+                let userHtml = '';
+                // Проверяем, является ли ник "МОДЕРАТОР" (без учета регистра)
+                if (cleanUser.toLowerCase() === 'модератор') {
+                    userHtml = `<strong class="mod-glitch-nickname">${cleanUser}</strong>`;
+                } else {
+                    const userColor = getNicknameColor(msg.user);
+                    userHtml = `<strong style="color: ${userColor};">${cleanUser}</strong>`;
+                }
+
+                p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 chatBox.appendChild(p);
             });
             chatBox.scrollTop = chatBox.scrollHeight;
