@@ -110,6 +110,13 @@
             animation: modShake 0.15s infinite ease-in-out, modColorGlow 1s infinite alternate;
         }
 
+        /* Стиль для сообщения о найденном секрете (зелёный цвет и чуть жирнее остальных) */
+        .secret-message {
+            color: #00ff66 !important;
+            font-weight: 800 !important;
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+        }
+
         @keyframes modShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             20% { transform: translate(-2px, 2px) rotate(-1deg); }
@@ -455,7 +462,7 @@
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
         </div>
         <p>© ARCHIVE 07-Биба // КОПИЯ НЕ СОВПАДАЕТ С ОРИГИНАЛОМ</p>
-        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.1</p>
+        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.3</p>
     </footer>
 
     <!-- Модалки -->
@@ -549,15 +556,19 @@
                 const p = document.createElement('p');
                 const cleanUser = escapeHtml(msg.user);
                 
-                let userHtml = '';
-                if (cleanUser.toLowerCase() === 'модератор') {
-                    userHtml = `<strong class="mod-glitch-nickname">${cleanUser}</strong>`;
+                if (msg.isSecret) {
+                    // Обезличенное системное сообщение: зелёный цвет и жирный шрифт
+                    p.className = "secret-message";
+                    p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> [Система]: Кто-то нашёл секрет!`;
+                } else if (cleanUser.toLowerCase() === 'модератор') {
+                    const userHtml = `<strong class="mod-glitch-nickname">${cleanUser}</strong>`;
+                    p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 } else {
                     const userColor = getNicknameColor(msg.user);
-                    userHtml = `<strong style="color: ${userColor};">${cleanUser}</strong>`;
+                    const userHtml = `<strong style="color: ${userColor};">${cleanUser}</strong>`;
+                    p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 }
 
-                p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 chatBox.appendChild(p);
             });
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -595,6 +606,13 @@
                 const popAudio = document.getElementById('popAudio');
                 if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
                 document.getElementById('secretUnlockOverlay').classList.add('active');
+
+                // Отправляем обезличенное секретное сообщение в чат Firebase
+                db.ref('messages').push({
+                    isSecret: true,
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+
             } else {
                 alert("ОШИБКА ДОСТУПА: Неверный логин или пароль!");
             }
