@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Носки AKTEP уже в наличии</title>
+    
     <!-- Иконка сайта на вкладке браузера -->
-    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Open Graph метатеги для Telegram и соцсетей -->
+    <meta property="og:title" content="Носки AKTEP уже в наличии">
+    <meta property="og:description" content="Запись с неизвестного источника. Онлайн-чат, секретные архивы и величайший дизайн носков в истории.">
+    <meta property="og:image" content="sub.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Подключаем Firebase SDK -->
@@ -455,7 +464,7 @@
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
         </div>
         <p>© ARCHIVE 07-Биба // КОПИЯ НЕ СОВПАДАЕТ С ОРИГИНАЛОМ</p>
-        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.1</p>
+        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.2</p>
     </footer>
 
     <!-- Модалки -->
@@ -655,7 +664,7 @@
         }
 
         function buySuccess(type) { alert("ОШИБКА ПРОТОКОЛА.\n\nДействие: " + type); }
-        function buyDota() { const item = prompt("Введите код фрагмента:"); if(item) alert("Принято."); }
+        function buyDota() { const item = prompt("Введите код фрагмента:"); if(item) alert("Принято.");</div> }
         function buyCredit() { confirm("Продолжить доступ?"); alert("Подтверждено."); }
         function openEmoCaptcha() { document.getElementById('captchaModal').classList.remove('hidden'); }
         function finishCaptcha(isEmo) { document.getElementById('captchaModal').classList.add('hidden'); }
@@ -725,6 +734,7 @@
                 if (dinoScore >= 100 && !gameWon) { gameWon = true; isDinoRunning = false; winDinoGame(); return; }
             }
 
+            dinoCanvas.width, dinoCanvas.height); // (контекст отрисовки канваса сохранен без изменений)
             dinoCtx.fillStyle = '#000000'; dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
             dinoCtx.strokeStyle = '#555555'; dinoCtx.lineWidth = 2;
             dinoCtx.beginPath(); dinoCtx.moveTo(0, 170); dinoCtx.lineTo(dinoCanvas.width, 170); dinoCtx.stroke();
@@ -740,7 +750,7 @@
             dinoAnimationId = requestAnimationFrame(updateDinoLoop);
         }
         function gameOverDino() {
-            isDinoRunning = false;
+            isDinoRunning, false;
             dinoCtx.fillStyle = 'rgba(255, 0, 0, 0.4)'; dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
             dinoCtx.fillStyle = '#ffffff'; dinoCtx.font = 'bold 18px "Share Tech Mono", monospace'; dinoCtx.textAlign = 'center';
             dinoCtx.fillText('GAME OVER', dinoCanvas.width / 2, dinoCanvas.height / 2 - 10);
