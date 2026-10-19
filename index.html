@@ -50,6 +50,30 @@
         #secretUnlockOverlay.active { opacity: 1; pointer-events: auto; }
         #secretUnlockOverlay img { max-width: 90vw; max-height: 80vh; border: 4px solid #00ffcc; box-shadow: 0 0 30px #00ffcc; object-fit: contain; }
 
+        /* Оверлей для secret.png */
+        #customSecretOverlay {
+            position: fixed; inset: 0; z-index: 150000; background: rgba(0,0,0,0.96);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out;
+        }
+        #customSecretOverlay.active { opacity: 1; pointer-events: auto; }
+        #customSecretOverlay img { max-width: 90vw; max-height: 80vh; border: 4px solid #ff0055; box-shadow: 0 0 40px #ff0055; object-fit: contain; }
+
+        /* БОССФАЙТ ОВЕРЛЕЙ */
+        #bossOverlay {
+            position: fixed; inset: 0; z-index: 200000; background: #05000a;
+            display: none; flex-direction: column; align-items: center; justify-content: space-between;
+            overflow: hidden; user-select: none;
+        }
+        #bossOverlay.active { display: flex; }
+        #bossCanvas {
+            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+        }
+        .boss-ui {
+            position: relative; z-index: 10; width: 100%; padding: 15px;
+            pointer-events: none;
+        }
+
         [class*="pink-"], [class*="purple-"], [class*="cyan-"], [class*="yellow-"],
         [class*="green-"], [class*="red-"], [class*="blue-"], [class*="orange-"] {
             color:#d6d6d6 !important; border-color:#777 !important; text-shadow:1px 1px #000 !important;
@@ -101,7 +125,6 @@
         }
         .glitch-btn:hover { background: #ff0055; color: #000; text-shadow: none; box-shadow: 0 0 20px rgba(255,0,85,0.9); }
 
-        /* Эффекты для ника МОДЕРАТОР */
         .mod-glitch-nickname {
             color: #ff0055 !important;
             font-weight: 900;
@@ -110,7 +133,6 @@
             animation: modShake 0.15s infinite ease-in-out, modColorGlow 1s infinite alternate;
         }
 
-        /* Стиль для сообщения о найденном секрете (зелёный цвет и чуть жирнее остальных) */
         .secret-message {
             color: #00ff66 !important;
             font-weight: 800 !important;
@@ -165,8 +187,52 @@
         <button onclick="closeSecretUnlock()" class="mt-4 bg-red-600 text-white px-4 py-2 text-xs font-bold border border-white">ЗАКРЫТЬ</button>
     </div>
 
+    <!-- Секретный оверлей для secret.png -->
+    <div id="customSecretOverlay">
+        <h2 class="text-3xl text-pink-500 font-extrabold mb-4 blink">СЕКРЕТНЫЙ ДОСТУП MIA410 УСПЕШЕН</h2>
+        <img src="secret.png" alt="Secret" onerror="this.src='https://placehold.co/600x600/ff0055/000?text=SECRET.PNG+NOT+FOUND';">
+        <button onclick="closeCustomSecret()" class="mt-4 bg-pink-600 text-white px-4 py-2 text-xs font-bold border border-white hover:bg-pink-500">ЗАКРЫТЬ</button>
+    </div>
+
+    <!-- БОССФАЙТ ОВЕРЛЕЙ -->
+    <div id="bossOverlay">
+        <canvas id="bossCanvas"></canvas>
+        <div class="boss-ui max-w-4xl mx-auto flex flex-col items-center">
+            <!-- Здоровье босса -->
+            <div class="w-full bg-black/80 border-2 border-red-600 p-2 rounded shadow-[0_0_20px_rgba(255,0,0,0.6)]">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-red-500 font-extrabold text-sm md:text-lg tracking-widest blink">⚡ ВЕЛИКИЙ АКТЁР [ХАРДКОР] ⚡</span>
+                    <span id="bossHpText" class="text-yellow-400 font-bold text-xs md:text-sm">1200 / 1200</span>
+                </div>
+                <div class="w-full bg-gray-900 h-5 border border-red-900 rounded overflow-hidden">
+                    <div id="bossHpBar" class="bg-gradient-to-r from-red-800 via-red-500 to-yellow-400 h-full w-full transition-all duration-100"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="boss-ui max-w-4xl mx-auto flex justify-between items-end mb-2">
+            <!-- Здоровье игрока -->
+            <div class="bg-black/80 border-2 border-cyan-500 p-2 rounded min-w-[200px]">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-cyan-400 font-bold text-xs">ВАШЕ ЗДОРОВЬЕ:</span>
+                    <span id="playerHpText" class="text-green-400 font-bold text-xs">100 / 100</span>
+                </div>
+                <div class="w-full bg-gray-900 h-3 border border-cyan-900 rounded overflow-hidden">
+                    <div id="playerHpBar" class="bg-gradient-to-r from-green-500 to-cyan-400 h-full w-full transition-all duration-100"></div>
+                </div>
+            </div>
+
+            <!-- Инструкция -->
+            <div class="bg-black/80 border border-yellow-500 p-2 rounded text-right text-[10px] text-yellow-300 space-y-1">
+                <p>💡 <b class="text-white">КЛИКАЙТЕ</b> для атаки Босса!</p>
+                <p>⚡ Нажмите <b class="text-cyan-300">[ПРОБЕЛ]</b> для рывка (неуязвимость)!</p>
+            </div>
+        </div>
+    </div>
+
     <audio id="bgAudio" src="mus.mp3" loop preload="auto"></audio>
     <audio id="popAudio" src="pop.mp3" preload="auto"></audio>
+    <audio id="bossAudio" src="boss.mp3" loop preload="auto"></audio>
 
     <header class="w-full max-w-5xl mb-4">
         <div class="bg-black border-2 border-pink-500 p-2 text-yellow-300 font-bold text-lg mb-2 overflow-hidden">
@@ -231,7 +297,7 @@
                 <div class="relative group mx-auto">
                     <div class="absolute -inset-1 bg-gradient-to-r from-white-400 via-white-500 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
                     <div class="relative bg-black p-2 rounded-lg border-4 border-yellow-400">
-                        <img src="me.png" alt="Актёр - Создатель носков" class="w-64 md:w-80 h-auto mx-auto object-contain drop-shadow-[0_0_25px_rgba(255,215,0,0.9)] transition-transform duration-300 hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/300x400/ff007f/ffffff?text=АКТЁР+(me.png)';">
+                        <img id="actorBossImg" src="me.png" alt="Актёр - Создатель носков" class="w-64 md:w-80 h-auto mx-auto object-contain drop-shadow-[0_0_25px_rgba(255,215,0,0.9)] transition-transform duration-300 hover:scale-105 cursor-pointer" onerror="this.onerror=null; this.src='https://placehold.co/300x400/ff007f/ffffff?text=АКТЁР+(me.png)';">
                     </div>
                 </div>
 
@@ -281,6 +347,10 @@
                 <p class="text-gray-400 mb-1">Онлайн:</p>
                 <div class="pixel-font text-lg text-red-500 bg-gray-950 p-1 tracking-widest border border-red-900 inline-block">
                     00<span id="visitorCount">1</span>
+                </div>
+                <!-- Текст при 100 кликах -->
+                <div id="miaSecretText" class="hidden mt-2 text-xs font-bold text-yellow-300 blink">
+                    Логин: Mia410
                 </div>
             </div>
 
@@ -366,7 +436,7 @@
 
                     <div id="runawayArea" class="relative h-16 w-full bg-black/40 border border-dashed border-pink-500 rounded mb-3 flex items-center justify-center overflow-hidden">
                         <span class="text-[10px] text-gray-500">ОШИБКА</span>
-                        <button id="runawayBtn" onmouseover="moveButton()" onclick="alert('Не удалось открыть файл.')" class="runaway-btn btn-2007 px-4 py-2 text-sm rounded cursor-pointer">
+                        <button id="runawayBtn" onmouseover="moveButton()" onclick="redirectToPirate()" class="runaway-btn btn-2007 px-4 py-2 text-sm rounded cursor-pointer">
                             КУПИТЬ
                         </button>
                     </div>
@@ -389,7 +459,7 @@
         </section>
     </main>
 
-    <!-- === ОНЛАЙН-ЧАТ РЕАЛЬНОГО ВРЕМЕНИ (РАЗМЕЩЕН НАД ОТЗЫВАМИ) === -->
+    <!-- === ОНЛАЙН-ЧАТ РЕАЛЬНОГО ВРЕМЕНИ === -->
     <section class="w-full max-w-5xl my-4">
         <div class="retro-box p-4 md:p-6 border-2 border-cyan-400">
             <h3 class="text-cyan-300 font-bold text-base md:text-lg mb-3 text-center border-b border-cyan-500 pb-2">
@@ -462,7 +532,7 @@
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
         </div>
         <p>© ARCHIVE 07-Биба // КОПИЯ НЕ СОВПАДАЕТ С ОРИГИНАЛОМ</p>
-        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.3</p>
+        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.4a</p>
     </footer>
 
     <!-- Модалки -->
@@ -512,6 +582,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // --- Перенаправление при клике "КУПИТЬ" ---
+        function redirectToPirate() {
+            window.location.href = "https://www.youtube.com/watch?v=9YjdXJeQQ3g";
+        }
+
         // --- Функция генерации уникального цвета для ника ---
         function getNicknameColor(username) {
             let hash = 0;
@@ -554,17 +629,16 @@
 
             Object.values(data).forEach(msg => {
                 const p = document.createElement('p');
-                const cleanUser = escapeHtml(msg.user);
+                const cleanUser = escapeHtml(msg.user || '');
                 
                 if (msg.isSecret) {
-                    // Обезличенное системное сообщение: зелёный цвет и жирный шрифт
                     p.className = "secret-message";
                     p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> [Система]: Кто-то нашёл секрет!`;
                 } else if (cleanUser.toLowerCase() === 'модератор') {
                     const userHtml = `<strong class="mod-glitch-nickname">${cleanUser}</strong>`;
                     p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 } else {
-                    const userColor = getNicknameColor(msg.user);
+                    const userColor = getNicknameColor(msg.user || 'Anon');
                     const userHtml = `<strong style="color: ${userColor};">${cleanUser}</strong>`;
                     p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> ${userHtml}: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
                 }
@@ -578,25 +652,48 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // --- ОСТАЛЬНОЙ СКРИПТ (Скример, Авторизация, Игра) ---
+        // --- СКРИМЕР (Раз в 2 минуты) ---
         let glitchedDisabled = false;
 
         function triggerScreamer() {
-            if (glitchedDisabled) return;
-            const screamer = document.getElementById('screamerOverlay');
-            if (!screamer) return;
-            screamer.classList.add('active');
-            setTimeout(() => { screamer.classList.remove('active'); }, 300);
+            if (glitchedDisabled || isBossActive) return;
+            if (Math.random() < 0.3) {
+                const screamer = document.getElementById('screamerOverlay');
+                if (!screamer) return;
+                screamer.classList.add('active');
+                setTimeout(() => { screamer.classList.remove('active'); }, 250);
+            }
         }
-        setInterval(triggerScreamer, 60000);
+        setInterval(triggerScreamer, 120000); // 120 000 мс = 2 минуты
 
+        // --- Авторизация: проверка логина Mia410 и пароля 7771 ---
         function checkAuth() {
-            const loginVal = document.getElementById('loginInput').value.trim().toLowerCase();
+            const loginVal = document.getElementById('loginInput').value.trim();
             const passVal = document.getElementById('passwordInput').value.trim();
+            
+            // Также поддерживаем старый логин/пароль на случай если нужен
             const validLogins = ['актёр', 'aktep', 'актер', 'актеп', 'актёп'];
             const validPass = '9288';
 
-            if (validLogins.includes(loginVal) && passVal === validPass) {
+            if (loginVal.toLowerCase() === 'mia410' && passVal === '7771') {
+                glitchedDisabled = true;
+                clearInterval(glitchIntervalId);
+                const vhs = document.getElementById('vhsNoise');
+                if (vhs) vhs.remove();
+                document.body.classList.remove('glitching');
+
+                const popAudio = document.getElementById('popAudio');
+                if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
+                
+                // Показываем секретную картинку secret.png
+                document.getElementById('customSecretOverlay').classList.add('active');
+
+                db.ref('messages').push({
+                    isSecret: true,
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+
+            } else if (validLogins.includes(loginVal.toLowerCase()) && passVal === validPass) {
                 glitchedDisabled = true;
                 clearInterval(glitchIntervalId);
                 const vhs = document.getElementById('vhsNoise');
@@ -607,12 +704,10 @@
                 if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
                 document.getElementById('secretUnlockOverlay').classList.add('active');
 
-                // Отправляем обезличенное секретное сообщение в чат Firebase
                 db.ref('messages').push({
                     isSecret: true,
                     time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
                 });
-
             } else {
                 alert("ОШИБКА ДОСТУПА: Неверный логин или пароль!");
             }
@@ -622,14 +717,20 @@
             document.getElementById('secretUnlockOverlay').classList.remove('active');
         }
 
+        function closeCustomSecret() {
+            document.getElementById('customSecretOverlay').classList.remove('active');
+        }
+
         function changeVolume(val) {
             const audio = document.getElementById('bgAudio');
+            const bossAud = document.getElementById('bossAudio');
             if (audio) audio.volume = parseFloat(val);
+            if (bossAud) bossAud.volume = parseFloat(val);
         }
 
         const vhsNoise = document.getElementById('vhsNoise');
         function tapeGlitch() {
-            if (glitchedDisabled) return;
+            if (glitchedDisabled || isBossActive) return;
             document.body.classList.add('glitching');
             if (vhsNoise) {
                 vhsNoise.style.opacity = String(0.18 + Math.random() * 0.35);
@@ -678,11 +779,411 @@
         function openEmoCaptcha() { document.getElementById('captchaModal').classList.remove('hidden'); }
         function finishCaptcha(isEmo) { document.getElementById('captchaModal').classList.add('hidden'); }
 
+        // --- Увеличение счётчика кликов и проверка на 100 ---
         document.addEventListener('click', (e) => {
-            if (e.target.closest('#dinoModal') || e.target.closest('#secretUnlockOverlay')) return;
+            if (e.target.closest('#dinoModal') || e.target.closest('#secretUnlockOverlay') || e.target.closest('#customSecretOverlay') || isBossActive) return;
             const el = document.getElementById('visitorCount');
-            if (el) el.innerText = parseInt(el.innerText) + 1;
+            if (el) {
+                let currentCount = parseInt(el.innerText) + 1;
+                el.innerText = currentCount;
+
+                if (currentCount === 100) {
+                    const secretText = document.getElementById('miaSecretText');
+                    if (secretText) secretText.classList.remove('hidden');
+                    const popAudio = document.getElementById('popAudio');
+                    if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
+                }
+            }
         });
+
+        // ==========================================
+        // 🔥 ХАРДКОРНЫЙ БОССФАЙТ С АКТЁРОМ 🔥
+        // ==========================================
+        let meClickCount = 0;
+        let isBossActive = false;
+        let bossLoopId = null;
+
+        const actorImgBtn = document.getElementById('actorBossImg');
+        actorImgBtn.addEventListener('click', () => {
+            if (isBossActive) return;
+            meClickCount++;
+            
+            actorImgBtn.style.transform = `scale(1.1) rotate(${Math.random() * 10 - 5}deg)`;
+            setTimeout(() => { actorImgBtn.style.transform = 'scale(1) rotate(0deg)'; }, 100);
+
+            if (meClickCount >= 10) {
+                meClickCount = 0;
+                startBossFight();
+            }
+        });
+
+        let bossCanvas, bossCtx;
+        let bossHp = 1200, maxBossHp = 1200;
+        let playerHp = 100, maxPlayerHp = 100;
+        let playerPos = { x: 0, y: 0, r: 18 };
+        let isDashing = false, dashCooldown = 0;
+        let bossPos = { x: 0, y: 0, targetX: 0, targetY: 0, size: 140, phase: 1, speed: 0.06 };
+        let projectiles = [];
+        let particles = [];
+        let lasers = [];
+        let attackTimer = 0;
+        let wasBgAudioPlaying = false;
+
+        function startBossFight() {
+            isBossActive = true;
+            document.getElementById('bossOverlay').classList.add('active');
+            
+            const bgAudio = document.getElementById('bgAudio');
+            if (bgAudio && !bgAudio.paused) {
+                wasBgAudioPlaying = true;
+                bgAudio.pause();
+            }
+            const bossAudio = document.getElementById('bossAudio');
+            if (bossAudio) {
+                bossAudio.currentTime = 0;
+                bossAudio.volume = parseFloat(document.getElementById('volumeSlider').value || 1);
+                bossAudio.play().catch(e => console.log('Audio error:', e));
+            }
+
+            bossCanvas = document.getElementById('bossCanvas');
+            bossCtx = bossCanvas.getContext('2d');
+            resizeBossCanvas();
+            window.addEventListener('resize', resizeBossCanvas);
+
+            bossHp = maxBossHp;
+            playerHp = maxPlayerHp;
+            updateBossHpUI();
+            updatePlayerHpUI();
+
+            bossPos.x = bossCanvas.width / 2;
+            bossPos.y = bossCanvas.height * 0.25;
+            bossPos.targetX = bossPos.x;
+            bossPos.targetY = bossPos.y;
+            bossPos.phase = 1;
+
+            playerPos.x = bossCanvas.width / 2;
+            playerPos.y = bossCanvas.height * 0.75;
+
+            projectiles = [];
+            particles = [];
+            lasers = [];
+            attackTimer = 0;
+
+            window.addEventListener('mousemove', handleBossMouseMove);
+            window.addEventListener('touchmove', handleBossTouchMove);
+            window.addEventListener('click', handleBossClick);
+            window.addEventListener('keydown', handleBossKeyDown);
+
+            cancelAnimationFrame(bossLoopId);
+            bossLoopId = requestAnimationFrame(updateBossLoop);
+        }
+
+        function resizeBossCanvas() {
+            if (!bossCanvas) return;
+            bossCanvas.width = window.innerWidth;
+            bossCanvas.height = window.innerHeight;
+        }
+
+        function handleBossMouseMove(e) {
+            playerPos.x = e.clientX;
+            playerPos.y = e.clientY;
+        }
+
+        function handleBossTouchMove(e) {
+            if (e.touches.length > 0) {
+                playerPos.x = e.touches[0].clientX;
+                playerPos.y = e.touches[0].clientY;
+            }
+        }
+
+        function handleBossKeyDown(e) {
+            if (e.code === 'Space' && dashCooldown <= 0) {
+                isDashing = true;
+                dashCooldown = 45;
+                setTimeout(() => { isDashing = false; }, 200);
+            }
+        }
+
+        function handleBossClick(e) {
+            if (!isBossActive) return;
+            let dx = e.clientX - bossPos.x;
+            let dy = e.clientY - bossPos.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            let dmg = Math.floor(12 + Math.random() * 8);
+            if (dist < bossPos.size + 30) dmg *= 1.3;
+            
+            bossHp = Math.max(0, bossHp - dmg);
+            updateBossHpUI();
+            createHitParticles(e.clientX, e.clientY, '#00ffcc');
+
+            if (bossHp <= 0) winBossFight();
+        }
+
+        function updateBossHpUI() {
+            document.getElementById('bossHpText').innerText = `${Math.ceil(bossHp)} / ${maxBossHp}`;
+            document.getElementById('bossHpBar').style.width = `${(bossHp / maxBossHp) * 100}%`;
+        }
+
+        function updatePlayerHpUI() {
+            document.getElementById('playerHpText').innerText = `${Math.ceil(playerHp)} / ${maxPlayerHp}`;
+            document.getElementById('playerHpBar').style.width = `${(playerHp / maxPlayerHp) * 100}%`;
+        }
+
+        function updateBossLoop() {
+            if (!isBossActive) return;
+
+            bossCtx.fillStyle = 'rgba(5, 0, 10, 0.3)';
+            bossCtx.fillRect(0, 0, bossCanvas.width, bossCanvas.height);
+
+            if (dashCooldown > 0) dashCooldown--;
+
+            if (bossHp < maxBossHp * 0.5 && bossPos.phase === 1) {
+                bossPos.phase = 2;
+                bossPos.speed = 0.09;
+                createHitParticles(bossPos.x, bossPos.y, '#ff0055', 60);
+            }
+
+            attackTimer++;
+            if (bossPos.phase === 2) {
+                bossPos.targetX += (playerPos.x - bossPos.targetX) * 0.02;
+                bossPos.targetY += (Math.min(playerPos.y, bossCanvas.height * 0.4) - bossPos.targetY) * 0.02;
+            } else if (attackTimer % 90 === 0) {
+                bossPos.targetX = Math.random() * (bossCanvas.width - 200) + 100;
+                bossPos.targetY = Math.random() * (bossCanvas.height * 0.35) + 60;
+            }
+
+            bossPos.x += (bossPos.targetX - bossPos.x) * bossPos.speed;
+            bossPos.y += (bossPos.targetY - bossPos.y) * bossPos.speed;
+
+            let attackRate = bossPos.phase === 2 ? 45 : 70;
+            if (attackTimer % attackRate === 0) {
+                let choice = Math.random();
+                if (choice < 0.45) {
+                    spawnHardSockRing();
+                } else if (choice < 0.8) {
+                    spawnHomingProjectiles();
+                } else {
+                    spawnCrossLasers();
+                }
+            }
+
+            for (let i = lasers.length - 1; i >= 0; i--) {
+                let l = lasers[i];
+                l.timer--;
+
+                bossCtx.strokeStyle = l.timer > 15 ? 'rgba(255, 0, 85, 0.5)' : '#ff0055';
+                bossCtx.lineWidth = l.timer > 15 ? 3 : 50;
+                bossCtx.beginPath();
+                bossCtx.moveTo(l.x1, l.y1);
+                bossCtx.lineTo(l.x2, l.y2);
+                bossCtx.stroke();
+
+                if (l.timer <= 15 && !isDashing && distToSegment(playerPos, {x: l.x1, y: l.y1}, {x: l.x2, y: l.y2}) < 30) {
+                    playerHp -= 25;
+                    updatePlayerHpUI();
+                    createHitParticles(playerPos.x, playerPos.y, '#ff0000', 20);
+                    if (playerHp <= 0) { loseBossFight(); return; }
+                }
+
+                if (l.timer <= 0) {
+                    lasers.splice(i, 1);
+                }
+            }
+
+            bossCtx.save();
+            bossCtx.translate(bossPos.x, bossPos.y);
+            let pulse = Math.sin(Date.now() * 0.008) * 12;
+            let currentSize = bossPos.size + pulse;
+
+            let auraGradient = bossCtx.createRadialGradient(0, 0, 10, 0, 0, currentSize);
+            auraGradient.addColorStop(0, bossPos.phase === 2 ? 'rgba(255,0,85,0.9)' : 'rgba(255,215,0,0.8)');
+            auraGradient.addColorStop(1, 'rgba(0,0,0,0)');
+            bossCtx.fillStyle = auraGradient;
+            bossCtx.beginPath();
+            bossCtx.arc(0, 0, currentSize * 1.4, 0, Math.PI * 2);
+            bossCtx.fill();
+
+            if (meImg.complete && meImg.naturalWidth !== 0) {
+                bossCtx.drawImage(meImg, -currentSize / 2, -currentSize / 2, currentSize, currentSize);
+            } else {
+                bossCtx.fillStyle = '#ff007f';
+                bossCtx.fillRect(-currentSize / 2, -currentSize / 2, currentSize, currentSize);
+            }
+            bossCtx.restore();
+
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let p = projectiles[i];
+                
+                if (p.homing) {
+                    let angleToPlayer = Math.atan2(playerPos.y - p.y, playerPos.x - p.x);
+                    p.vx += Math.cos(angleToPlayer) * 0.2;
+                    p.vy += Math.sin(angleToPlayer) * 0.2;
+                    let speed = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
+                    if (speed > 5.5) { p.vx = (p.vx/speed)*5.5; p.vy = (p.vy/speed)*5.5; }
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                bossCtx.save();
+                bossCtx.translate(p.x, p.y);
+                if (sokImg.complete && sokImg.naturalWidth !== 0) {
+                    bossCtx.drawImage(sokImg, -14, -14, 28, 28);
+                } else {
+                    bossCtx.fillStyle = '#00ffcc';
+                    bossCtx.beginPath();
+                    bossCtx.arc(0, 0, 10, 0, Math.PI * 2);
+                    bossCtx.fill();
+                }
+                bossCtx.restore();
+
+                let pdx = p.x - playerPos.x;
+                let pdy = p.y - playerPos.y;
+                let pdist = Math.sqrt(pdx * pdx + pdy * pdy);
+
+                if (pdist < playerPos.r + 10) {
+                    if (!isDashing) {
+                        playerHp -= p.dmg;
+                        updatePlayerHpUI();
+                        createHitParticles(playerPos.x, playerPos.y, '#ff0055', 10);
+                        if (playerHp <= 0) { loseBossFight(); return; }
+                    }
+                    projectiles.splice(i, 1);
+                    continue;
+                }
+
+                if (p.x < -60 || p.x > bossCanvas.width + 60 || p.y < -60 || p.y > bossCanvas.height + 60) {
+                    projectiles.splice(i, 1);
+                }
+            }
+
+            bossCtx.save();
+            bossCtx.strokeStyle = isDashing ? '#00ffff' : '#00ff66';
+            bossCtx.lineWidth = isDashing ? 4 : 2;
+            bossCtx.beginPath();
+            bossCtx.arc(playerPos.x, playerPos.y, playerPos.r, 0, Math.PI * 2);
+            bossCtx.stroke();
+            if (isDashing) {
+                bossCtx.fillStyle = 'rgba(0, 255, 255, 0.4)';
+                bossCtx.fill();
+            }
+            bossCtx.restore();
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let pt = particles[i];
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.life -= 0.035;
+                if (pt.life <= 0) { particles.splice(i, 1); continue; }
+                bossCtx.fillStyle = pt.color;
+                bossCtx.globalAlpha = pt.life;
+                bossCtx.beginPath();
+                bossCtx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+                bossCtx.fill();
+                bossCtx.globalAlpha = 1;
+            }
+
+            bossLoopId = requestAnimationFrame(updateBossLoop);
+        }
+
+        function spawnHardSockRing() {
+            let count = bossPos.phase === 2 ? 14 : 10;
+            for (let i = 0; i < count; i++) {
+                let angle = (Math.PI * 2 / count) * i;
+                let speed = 4.2;
+                projectiles.push({
+                    x: bossPos.x, y: bossPos.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    dmg: 12,
+                    homing: false
+                });
+            }
+        }
+
+        function spawnHomingProjectiles() {
+            let count = bossPos.phase === 2 ? 4 : 2;
+            for (let i = 0; i < count; i++) {
+                projectiles.push({
+                    x: bossPos.x + (Math.random() - 0.5) * 50,
+                    y: bossPos.y + (Math.random() - 0.5) * 50,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3,
+                    dmg: 15,
+                    homing: true
+                });
+            }
+        }
+
+        function spawnCrossLasers() {
+            lasers.push({
+                x1: Math.random() * bossCanvas.width, y1: 0,
+                x2: playerPos.x, y2: bossCanvas.height,
+                timer: 55
+            });
+            if (bossPos.phase === 2) {
+                lasers.push({
+                    x1: 0, y1: Math.random() * bossCanvas.height,
+                    x2: bossCanvas.width, y2: playerPos.y,
+                    timer: 55
+                });
+            }
+        }
+
+        function createHitParticles(x, y, color, count = 10) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 9,
+                    vy: (Math.random() - 0.5) * 9,
+                    size: Math.random() * 4 + 2,
+                    color: color,
+                    life: 1
+                });
+            }
+        }
+
+        function distToSegment(p, v, w) {
+            function l2(v, w) { return (v.x - w.x)**2 + (v.y - w.y)**2 }
+            let l = l2(v, w);
+            if (l === 0) return Math.sqrt(l2(p, v));
+            let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l;
+            t = Math.max(0, Math.min(1, t));
+            return Math.sqrt(l2(p, { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) }));
+        }
+
+        function stopBossFight() {
+            isBossActive = false;
+            cancelAnimationFrame(bossLoopId);
+            document.getElementById('bossOverlay').classList.remove('active');
+
+            window.removeEventListener('mousemove', handleBossMouseMove);
+            window.removeEventListener('touchmove', handleBossTouchMove);
+            window.removeEventListener('click', handleBossClick);
+            window.removeEventListener('keydown', handleBossKeyDown);
+
+            const bossAudio = document.getElementById('bossAudio');
+            if (bossAudio) {
+                bossAudio.pause();
+                bossAudio.currentTime = 0;
+            }
+
+            if (wasBgAudioPlaying) {
+                const bgAudio = document.getElementById('bgAudio');
+                if (bgAudio) bgAudio.play().catch(e => {});
+            }
+        }
+
+        function loseBossFight() {
+            stopBossFight();
+            alert("ПОРАЖЕНИЕ! ВЕЛИКИЙ АКТЁР ОКАЗАЛСЯ СЛИШКОМ СИЛЬЕН ДЛЯ ВАС...");
+        }
+
+        function winBossFight() {
+            stopBossFight();
+            alert("ПОБЕДА!\n\nПароль 7771");
+        }
 
         // ДИНОЗАВРИК
         let dinoCanvas, dinoCtx, dinoAnimationId, isDinoRunning = false, dinoScore = 0, dinoHighScore = 0, gameWon = false;
