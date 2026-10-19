@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Носки AKTEP уже в наличии</title>
+    <!-- Иконка сайта на вкладке браузера -->
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Подключаем Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -260,7 +263,7 @@
                 </ul>
             </div>
 
-            <!-- ИЗМЕНЕНО: Вместо QR-кода теперь видео add.mp4 -->
+            <!-- Видео с разрешением 672x480 -->
             <div class="bg-black p-3 border-2 border-pink-500 text-center rounded">
                 <p class="text-pink-400 font-bold mb-1">ФРАГМЕНТ ЗАПИСИ</p>
                 <video src="add.mp4" autoplay muted loop playsinline width="672" height="480" class="w-full h-auto mx-auto border border-cyan-400 my-1 object-cover" onerror="this.outerHTML='<div class=\'w-full h-28 flex items-center justify-center bg-black border border-red-500 text-red-400 text-[10px]\'>add.mp4 не найден</div>';"></video>
