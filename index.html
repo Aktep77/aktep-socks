@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Носки AKTEP уже в наличии</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap');
         :root { --blood:#777; --rust:#333; --static:#ddd; --dim:#888; --void:#050505; }
@@ -28,58 +31,25 @@
         
         /* Скример (by.jpg) */
         #screamerOverlay {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.05s ease-in-out;
+            position: fixed; inset: 0; z-index: 99999; background: #000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.05s ease-in-out;
         }
-        #screamerOverlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #screamerOverlay img {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-        }
+        #screamerOverlay.active { opacity: 1; pointer-events: auto; }
+        #screamerOverlay img { width: 100vw; height: 100vh; object-fit: cover; }
 
         /* Полноэкранный разблокированный поп-ап (popa.png) */
         #secretUnlockOverlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100000;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
+            position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out;
         }
-        #secretUnlockOverlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #secretUnlockOverlay img {
-            max-width: 90vw;
-            max-height: 80vh;
-            border: 4px solid #00ffcc;
-            box-shadow: 0 0 30px #00ffcc;
-            object-fit: contain;
-        }
+        #secretUnlockOverlay.active { opacity: 1; pointer-events: auto; }
+        #secretUnlockOverlay img { max-width: 90vw; max-height: 80vh; border: 4px solid #00ffcc; box-shadow: 0 0 30px #00ffcc; object-fit: contain; }
 
-        /* Desaturated palette */
         [class*="pink-"], [class*="purple-"], [class*="cyan-"], [class*="yellow-"],
         [class*="green-"], [class*="red-"], [class*="blue-"], [class*="orange-"] {
-            color:#d6d6d6 !important; border-color:#777 !important;
-            text-shadow:1px 1px #000 !important;
+            color:#d6d6d6 !important; border-color:#777 !important; text-shadow:1px 1px #000 !important;
         }
         [class*="bg-pink-"], [class*="bg-purple-"], [class*="bg-cyan-"], [class*="bg-yellow-"],
         [class*="bg-green-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-orange-"] {
@@ -111,49 +81,28 @@
         .glitching { animation:screenTear .18s steps(2,end) 2; }
         .vhs-noise {
             position:fixed; inset:0; z-index:89; pointer-events:none; opacity:0;
-            background:
-              repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.11) 4px, transparent 5px 8px),
-              linear-gradient(transparent 68%, rgba(255,255,255,.3) 68.2%, transparent 69%),
-              linear-gradient(90deg, rgba(255,255,255,.09), transparent 3%, transparent 97%, rgba(255,255,255,.08));
+            background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.11) 4px, transparent 5px 8px),
+                        linear-gradient(transparent 68%, rgba(255,255,255,.3) 68.2%, transparent 69%),
+                        linear-gradient(90deg, rgba(255,255,255,.09), transparent 3%, transparent 97%, rgba(255,255,255,.08));
         }
         .vhs-noise::after {
             content:"PM  3:27\A AUG 23 1997"; white-space:pre; position:absolute; right:5%; top:18px;
-            color:#eee; font-size:clamp(12px,2.3vw,28px); line-height:1.25; text-align:right;
-            text-shadow:1px 1px #000; opacity:.8;
+            color:#eee; font-size:clamp(12px,2.3vw,28px); line-height:1.25; text-align:right; text-shadow:1px 1px #000; opacity:.8;
         }
         
-        /* Глючная кнопка */
         .glitch-btn {
-            position: relative;
-            background: #000;
-            color: #ff0055;
-            border: 2px solid #ff0055;
-            font-family: 'Share Tech Mono', monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            padding: 10px 16px;
-            cursor: pointer;
-            text-shadow: 2px 0 #00ffff;
-            animation: glitchText 1.5s infinite;
-            box-shadow: 0 0 10px rgba(255,0,85,0.5);
+            position: relative; background: #000; color: #ff0055; border: 2px solid #ff0055;
+            font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 1.1rem;
+            letter-spacing: 2px; padding: 10px 16px; cursor: pointer; text-shadow: 2px 0 #00ffff;
+            animation: glitchText 1.5s infinite; box-shadow: 0 0 10px rgba(255,0,85,0.5);
         }
-        .glitch-btn:hover {
-            background: #ff0055;
-            color: #000;
-            text-shadow: none;
-            box-shadow: 0 0 20px rgba(255,0,85,0.9);
-        }
+        .glitch-btn:hover { background: #ff0055; color: #000; text-shadow: none; box-shadow: 0 0 20px rgba(255,0,85,0.9); }
 
         @keyframes glitchText {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+            0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
         }
-
         @keyframes blinkSignal { 0%,88%,100%{opacity:1} 90%,94%{opacity:.25} }
         @keyframes titleSignal {
             0%,93%,100%{transform:none;clip-path:inset(0)}
@@ -172,31 +121,26 @@
 <body class="p-2 md:p-6 min-h-screen flex flex-col items-center justify-between relative">
     <div class="vhs-noise" id="vhsNoise" aria-hidden="true"></div>
 
-    <!-- СКРИМЕР (by.jpg) -->
     <div id="screamerOverlay">
         <img src="by.jpg" alt="Screamer" onerror="this.src='https://placehold.co/800x600/ff0000/fff?text=BY.JPG+NOT+FOUND';">
     </div>
 
-    <!-- РАЗБЛОКИРОВАННЫЙ ЭКРАН (popa.png) -->
     <div id="secretUnlockOverlay">
         <h2 class="text-3xl text-cyan-400 font-extrabold mb-4 blink">ДОСТУП РАЗБЛОКИРОВАН! АКТЁР ДОВОЛЕН</h2>
         <img src="popa.png" alt="Popa" onerror="this.src='https://placehold.co/600x600/00ffcc/000?text=POPA.PNG+NOT+FOUND';">
         <button onclick="closeSecretUnlock()" class="mt-4 bg-red-600 text-white px-4 py-2 text-xs font-bold border border-white">ЗАКРЫТЬ</button>
     </div>
 
-    <!-- Аудиоэлементы -->
     <audio id="bgAudio" src="mus.mp3" loop preload="auto"></audio>
     <audio id="popAudio" src="pop.mp3" preload="auto"></audio>
 
-    <!-- Верхний колонтитул / Бегущая строка -->
     <header class="w-full max-w-5xl mb-4">
         <div class="bg-black border-2 border-pink-500 p-2 text-yellow-300 font-bold text-lg mb-2 overflow-hidden">
             <marquee behavior="scroll" direction="left" scrollamount="8">
-                СПРЯТАНАЯ КАСЕТА // 19.10.2026 // КАЧЕСТВО КОПИИ НЕИЗВЕСТНО // САЙТ СОДЕРЖИТ НЕ БЕЗОПАСНЫЕ ФАЙЛЫ
+                СПРЯТАНАЯ КАСЕТА // 19.10.2026 // ОНЛАЙН-ЧАТ АКТИВИРОВАН
             </marquee>
         </div>
 
-        <!-- Шапка сайта -->
         <div class="retro-box p-4 text-center rounded-lg relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
                 <img src="qr.png" alt="QR" class="w-16 h-16 border-2 border-pink-500 hidden sm:block" onerror="this.onerror=null; this.src='https://placehold.co/80x80/000/fff?text=QR';">
@@ -215,7 +159,6 @@
                 </p>
             </div>
 
-            <!-- Плеер музыки с ползунком громкости -->
             <div class="bg-gray-900 border-2 border-cyan-400 p-2 flex flex-col items-center rounded">
                 <span class="text-[10px] text-cyan-300 pixel-font mb-1">КАССЕТА:</span>
                 <span class="text-[10px] text-yellow-400 truncate max-w-[140px] mb-1">audio_не_определён.wav</span>
@@ -230,7 +173,6 @@
         </div>
     </header>
 
-    <!-- ГИГАНТСКИЙ VIP-БЛОК ПОСВЯЩЕННЫЙ ВЕЛИКОМУ АКТЁРУ -->
     <section class="w-full max-w-5xl mb-6">
         <div class="gold-box p-6 rounded-xl text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 bg-yellow-400 text-black font-black px-4 py-1 text-xs uppercase tracking-widest rounded-bl-lg">
@@ -245,7 +187,6 @@
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <!-- Глючная кнопка -->
                 <div class="flex flex-col items-center justify-center bg-black/80 p-4 border border-yellow-500 rounded">
                     <button onclick="openDinoGame()" class="glitch-btn w-full">
                         ?;№(*!№?;
@@ -253,7 +194,6 @@
                     <span class="text-[9px] text-red-400 font-bold mt-2 blink">СЕКРЕТНАЯ КАСЕТА: НАЖМИ ДЛЯ ЗАПУСКА</span>
                 </div>
 
-                <!-- ГИГАНТСКОЕ ФОТО АКТЁРА -->
                 <div class="relative group mx-auto">
                     <div class="absolute -inset-1 bg-gradient-to-r from-white-400 via-white-500 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
                     <div class="relative bg-black p-2 rounded-lg border-4 border-yellow-400">
@@ -261,7 +201,6 @@
                     </div>
                 </div>
 
-                <!-- Текст расхваления Справа -->
                 <div class="bg-black/80 p-4 border-2 border-yellow-500/80 rounded text-left space-y-2">
                     <p class="text-xs text-yellow-200 leading-relaxed">
                          <b class="text-yellow-400">АКТЁР</b> — это не просто человек. Это титан мысли, легенда 2026 года и величайший дизайнер носков в истории человечества!
@@ -282,29 +221,27 @@
         </div>
     </section>
 
-    <!-- Главный контейнер (порядок на мобильных изменен через flex-col-reverse / order) -->
+    <!-- Главный контейнер -->
     <main class="w-full max-w-5xl flex flex-col md:grid md:grid-cols-3 gap-6 my-2">
         
-        <!-- Сайдбар слева (на телефонах пойдет вниз за счет flex-col-reverse) -->
+        <!-- Сайдбар слева -->
         <aside class="retro-box p-4 flex flex-col space-y-4 text-xs order-2 md:order-1">
             <div class="border-b-2 border-pink-500 pb-2">
                 <h3 class="text-pink-500 font-bold text-base mb-1">СОДЕРЖАНИЕ</h3>
                 <ul class="space-y-1 text-cyan-300 underline">
                     <li><a href="#" onclick="alert('Вы уже на главной странице сайта')">-> Гл страница 01</a></li>
-                    <li><a href="#" onclick="alert(:(%(::(%:(%)(:%(:%)(:%(:)%:(:')">-> Неизвестный объект</a></li>
+                    <li><a href="#" onclick="alert('(':(&#37;)(::(&#37;)(&#37;)(:(&#37;)(:(&#37;)(:)')">-> Неизвестный объект</a></li>
                     <li><a href="#" onclick="alert('МАТЬ ЯРИКА ШЛЮХА)')">-> Источник сигнала</a></li>
                     <li><a href="#" onclick="alert('Принимаем: QR-коды, карточки WebMoney, автографы Актёра')">-> Протокол доступа</a></li>
                 </ul>
             </div>
 
-            <!-- Дополнительный QR блок -->
             <div class="bg-black p-3 border-2 border-pink-500 text-center rounded">
                 <p class="text-pink-400 font-bold mb-1">ФРАГМЕНТ ЗАПИСИ</p>
                 <img src="qr.png" alt="QR" class="w-28 h-28 mx-auto border border-cyan-400 my-1" onerror="this.onerror=null; this.src='https://placehold.co/120x120/000/fff?text=QR';">
                 <p class="text-[9px] text-gray-400">Источник не подтверждён</p>
             </div>
 
-            <!-- Счетчик посетителей -->
             <div class="bg-black p-2 border border-green-500 text-center">
                 <p class="text-gray-400 mb-1">ОТКРЫТИЙ ФАЙЛА:</p>
                 <div class="pixel-font text-lg text-red-500 bg-gray-950 p-1 tracking-widest border border-red-900 inline-block">
@@ -312,14 +249,13 @@
                 </div>
             </div>
 
-            <!-- Чат и Форма авторизации -->
+            <!-- Форма авторизации -->
             <div class="text-center space-y-2 pt-2">
                 <div class="bg-pink-900 text-pink-200 p-2 text-[10px] border border-pink-400">
                     ЗАМЕТКИ К ЗАПИСИ:<br>
                     <span class="text-yellow-300">xX_B133D_Xx:</span> АКТЁР ЛУЧШИЙ СОЗДАТЕЛЬ НОСКОВ В МИРЕ!!
                 </div>
 
-                <!-- Блок с логином и паролем -->
                 <div class="bg-black p-3 border-2 border-cyan-400 rounded text-left space-y-2">
                     <p class="text-cyan-300 font-bold text-[10px] text-center">ДОСТУП К АРХИВУ:</p>
                     <div>
@@ -337,10 +273,9 @@
             </div>
         </aside>
 
-        <!-- Карточка товара (Центр) — на телефонах оказывается сверху -->
+        <!-- Карточка товара (Центр) -->
         <section class="md:col-span-2 retro-box p-4 md:p-6 flex flex-col justify-between relative order-1 md:order-2">
             <div>
-                <!-- Заголовок товара -->
                 <div class="border-b-2 border-pink-500 pb-2 mb-4">
                     <span class="bg-yellow-300 text-black font-bold text-xs px-2 py-0.5 rounded">ПОКУПКА</span>
                     <h2 class="text-xl md:text-2xl font-bold text-pink-400 mt-1">
@@ -349,15 +284,12 @@
                     <p class="text-xs text-gray-400">(МЕТКА: 07-Биба / ДАТА НЕИЗВЕСТНА)</p>
                 </div>
 
-                <!-- Контент товара -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                     <div class="bg-black p-4 border-2 border-pink-500 rounded-lg flex flex-col justify-center items-center relative group">
                         <div class="absolute top-2 left-2 bg-red-600 text-white text-[10px] px-1 font-bold animate-bounce z-10">
-                            НЕТ ДАННЫХ
+                            Акция
                         </div>
-                        
                         <img src="sok.png" alt="Эмо носки в полоску" class="max-w-full h-auto max-h-[240px] object-contain drop-shadow-[0_0_12px_rgba(255,0,21,0.8)]" onerror="this.onerror=null; this.src='https://placehold.co/200x260/000000/ff007f?text=sok.png+не+найден';">
-
                         <div class="mt-2 flex items-center space-x-2 bg-gray-900 p-1 border border-pink-400 w-full justify-center">
                             <img src="qr.png" alt="QR" class="w-8 h-8" onerror="this.onerror=null; this.src='https://placehold.co/40x40/000/fff?text=QR';">
                             <span class="text-[9px] text-yellow-300">ФАЙЛ ПОВРЕЖДЁН</span>
@@ -366,11 +298,11 @@
 
                     <div class="space-y-3">
                         <div class="bg-black p-3 border border-yellow-400">
-                            <p class="text-xs text-gray-400 line-through">ПРЕДЫДУЩАЯ МЕТКА: [УДАЛЕНО]</p>
+                            <p class="text-xs text-gray-400 line-through">ЦЕНА: 1399 руб.</p>
                             <p class="text-2xl font-extrabold text-green-400 blink">
                                 ЦЕНА: 899 руб.
                             </p>
-                            <p class="text-[10px] text-pink-400 mt-1">* Доставка не зафиксирована</p>
+                            <p class="text-[10px] text-pink-400 mt-1">* Доставка только на территории Лесной Поляны</p>
                         </div>
 
                         <ul class="text-xs space-y-1 text-gray-300 list-disc list-inside">
@@ -405,21 +337,10 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <button onclick="buySuccess('НЕ КУПИТЬ')" class="btn-green p-2 text-xs rounded hover:brightness-110">
-                            НЕ ПОКУПАТЬ
-                        </button>
-
-                        <button onclick="buyDota()" class="bg-purple-900 border-2 border-purple-400 text-purple-200 p-2 text-xs rounded font-bold hover:bg-purple-800">
-                            ПРОВЕРИТЬ ФАЙЛ
-                        </button>
-
-                        <button onclick="buyCredit()" class="bg-red-900 border-2 border-red-500 text-yellow-300 p-2 text-xs rounded font-bold hover:bg-red-800">
-                            ПОПОЛНИТЬ БАЛАНС СКИНАМИ
-                        </button>
-
-                        <button onclick="openEmoCaptcha()" class="bg-cyan-900 border-2 border-cyan-400 text-cyan-200 p-2 text-xs rounded font-bold hover:bg-cyan-800">
-                            ПОПОЛНИТЬ БАЛАНС КРИПТОЙ
-                        </button>
+                        <button onclick="buySuccess('НЕ КУПИТЬ')" class="btn-green p-2 text-xs rounded hover:brightness-110">НЕ ПОКУПАТЬ</button>
+                        <button onclick="buyDota()" class="bg-purple-900 border-2 border-purple-400 text-purple-200 p-2 text-xs rounded font-bold hover:bg-purple-800">ПРОВЕРИТЬ ФАЙЛ</button>
+                        <button onclick="buyCredit()" class="bg-red-900 border-2 border-red-500 text-yellow-300 p-2 text-xs rounded font-bold hover:bg-red-800">ПОПОЛНИТЬ БАЛАНС СКИНАМИ</button>
+                        <button onclick="openEmoCaptcha()" class="bg-cyan-900 border-2 border-cyan-400 text-cyan-200 p-2 text-xs rounded font-bold hover:bg-cyan-800">ПОПОЛНИТЬ БАЛАНС КРИПТОЙ</button>
                     </div>
                 </div>
             </div>
@@ -433,61 +354,65 @@
         </section>
     </main>
 
+    <!-- === ОНЛАЙН-ЧАТ РЕАЛЬНОГО ВРЕМЕНИ (РАЗМЕЩЕН НАД ОТЗЫВАМИ) === -->
+    <section class="w-full max-w-5xl my-4">
+        <div class="retro-box p-4 md:p-6 border-2 border-cyan-400">
+            <h3 class="text-cyan-300 font-bold text-base md:text-lg mb-3 text-center border-b border-cyan-500 pb-2">
+                ОНЛАЙН-ЧАТ
+            </h3>
+            <div class="bg-black border border-cyan-500 p-3 rounded mb-3 h-48 overflow-y-auto text-xs space-y-1" id="chatMessages">
+                <p class="text-gray-500">[Система]: Подключение к сети...</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" id="chatUser" placeholder="Ваш логин..." class="bg-gray-900 border border-pink-500 text-pink-300 p-2 text-xs rounded sm:w-1/3 focus:outline-none">
+                <input type="text" id="chatText" placeholder="Введите сообщение..." class="bg-gray-900 border border-cyan-500 text-white p-2 text-xs rounded sm:w-2/3 focus:outline-none" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="bg-pink-600 text-white px-4 py-2 text-xs rounded font-bold hover:bg-pink-500">ОТПРАВИТЬ</button>
+            </div>
+        </div>
+    </section>
+
     <!-- ОТЗЫВЫ -->
     <section class="w-full max-w-5xl my-4">
         <div class="retro-box p-4 md:p-6">
             <div class="flex justify-between items-center border-b-2 border-pink-500 pb-2 mb-4">
-                <h3 class="text-pink-500 font-bold text-base md:text-lg">
-                    💬 ОТЗЫВЫ ПОСЕТИТЕЛЕЙ
-                </h3>
+                <h3 class="text-pink-500 font-bold text-base md:text-lg">💬 ОТЗЫВЫ ПОСЕТИТЕЛЕЙ</h3>
                 <span class="text-xs text-yellow-300">ОТЗЫВОВ: 06</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                 <div class="bg-black/80 p-3 border-l-4 border-pink-500 rounded">
                     <div class="flex justify-between text-yellow-400 font-bold mb-1">
-                        <span>operator_03</span>
-                        <span class="text-gray-500 text-[10px]">17.10.2007 19:02</span>
+                        <span>operator_03</span><span class="text-gray-500 text-[10px]">17.10.2007 19:02</span>
                     </div>
                     <p class="text-gray-300">Поддержка не ответила на сообщение. Осталось неприятное впечатление.</p>
                 </div>
-
                 <div class="bg-black/80 p-3 border-l-4 border-cyan-500 rounded">
                     <div class="flex justify-between text-cyan-400 font-bold mb-1">
-                        <span>cam_02</span>
-                        <span class="text-gray-500 text-[10px]">16.10.2007 22:15</span>
+                        <span>cam_02</span><span class="text-gray-500 text-[10px]">16.10.2007 22:15</span>
                     </div>
                     <p class="text-gray-300">УМРИ В МУКАХ УРОД ЕБАНЫЙ!!!!!!!!!!!!!!!!!!в</p>
                 </div>
-
                 <div class="bg-black/80 p-3 border-l-4 border-purple-500 rounded">
                     <div class="flex justify-between text-purple-400 font-bold mb-1">
-                        <span>unknown_user</span>
-                        <span class="text-gray-500 text-[10px]">15.10.2007 14:40</span>
+                        <span>unknown_user</span><span class="text-gray-500 text-[10px]">15.10.2007 14:40</span>
                     </div>
                     <p class="text-gray-300">Коротко о жизни создателя этих носков: кооооооч браатаааан</p>
                 </div>
-
                 <div class="bg-black/80 p-3 border-l-4 border-green-500 rounded">
                     <div class="flex justify-between text-green-400 font-bold mb-1">
-                        <span>tape_recovery</span>
-                        <span class="text-gray-500 text-[10px]">14.10.2007 11:05</span>
+                        <span>tape_recovery</span><span class="text-gray-500 text-[10px]">14.10.2007 11:05</span>
                     </div>
                     <p class="text-gray-300">Сука ты ахуел такие цены ставить ублюдок конечный</p>
                 </div>
-
                 <div class="bg-black/80 p-3 border-l-4 border-yellow-500 rounded">
                     <div class="flex justify-between text-yellow-300 font-bold mb-1">
-                        <span>signal_17</span>
-                        <span class="text-gray-500 text-[10px]">12.10.2007 03:22</span>
+                        <span>signal_17</span><span class="text-gray-500 text-[10px]">12.10.2007 03:22</span>
                     </div>
                     <p class="text-gray-300">Меня заскамили на 900 рублей верните деньги ауууууууууууу</p>
                 </div>
-
                 <div class="bg-black/80 p-3 border-l-4 border-red-500 rounded">
                     <div class="flex justify-between text-red-400 font-bold mb-1">
-                        <span>Не акрёп</span>
-                        <span class="text-gray-500 text-[10px]">10.10.2007 18:50</span>
+                        <span>Не акрёп</span><span class="text-gray-500 text-[10px]">10.10.2007 18:50</span>
                     </div>
                     <p class="text-gray-300">Швы сделаны идеально! Актёр реально плакал над каждым швом, я ощущаю эту грусть своими пятками! 10000/10!</p>
                 </div>
@@ -495,7 +420,6 @@
         </div>
     </section>
 
-    <!-- Подвал -->
     <footer class="w-full max-w-5xl text-center text-[11px] text-gray-500 py-6 border-t border-pink-900 flex flex-col items-center space-y-3">
         <div class="flex items-center space-x-4">
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
@@ -506,7 +430,7 @@
         <p class="text-pink-600">Архивная копия. Источник не установлен.</p>
     </footer>
 
-    <!-- Модальное окно Эмо-капчи -->
+    <!-- Модалки -->
     <div id="captchaModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <div class="retro-box p-6 max-w-sm w-full border-4 border-pink-500 text-center">
             <h3 class="text-pink-500 font-bold text-lg mb-4">ПРОВЕРКА ДОСТУПА</h3>
@@ -520,17 +444,14 @@
         </div>
     </div>
 
-    <!-- Модальное окно Игры "Динозаврик AKTEP" -->
     <div id="dinoModal" class="hidden fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-4 z-50">
         <div class="retro-box p-4 max-w-xl w-full border-4 border-yellow-400 text-center relative">
             <button onclick="closeDinoGame()" class="absolute top-2 right-2 bg-red-600 text-white font-bold px-2 py-1 text-xs hover:bg-red-500">X</button>
             <h3 class="text-yellow-300 font-extrabold text-xl mb-1 tracking-widest">ИГРА: RUN AKTEP RUN</h3>
             <p class="text-xs text-gray-400 mb-2">Нажимай <b class="text-white">ПРОБЕЛ</b> или <b class="text-white">КЛИКАЙ</b>, чтобы перепрыгивать носки!</p>
-            
             <div class="relative bg-black border-2 border-white overflow-hidden mx-auto" style="width:100%; max-width:500px; height:200px;">
                 <canvas id="dinoCanvas" width="500" height="200" class="w-full h-full"></canvas>
             </div>
-
             <div class="mt-3 flex justify-between items-center text-xs">
                 <span id="dinoScore" class="text-green-400 font-bold text-sm">СЧЁТ: 0</span>
                 <span id="dinoHighScore" class="text-yellow-400 font-bold text-sm">РЕКОРД: 0</span>
@@ -539,28 +460,80 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript логика -->
     <script>
+        // === ВАШИ ДАННЫЕ FIREBASE ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHZKQYe30wE_Fz76TxqW4lTARkHIMh7es",
+            authDomain: "aktep-chat.firebaseapp.com",
+            databaseURL: "https://aktep-chat-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "aktep-chat",
+            storageBucket: "aktep-chat.firebasestorage.app",
+            messagingSenderId: "286158389718",
+            appId: "1:286158389718:web:dbbce7385b80ec8435a477",
+            measurementId: "G-Q6TYN4TJ1C"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- ЛОГИКА ЧАТА ---
+        function sendChatMessage() {
+            const user = document.getElementById('chatUser').value.trim();
+            const text = document.getElementById('chatText').value.trim();
+
+            if (!user) {
+                alert("Введите логин для отправки сообщения!");
+                return;
+            }
+            if (!text) return;
+
+            db.ref('messages').push({
+                user: user,
+                text: text,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            document.getElementById('chatText').value = '';
+        }
+
+        db.ref('messages').limitToLast(50).on('value', (snapshot) => {
+            const chatBox = document.getElementById('chatMessages');
+            chatBox.innerHTML = '';
+            
+            const data = snapshot.val();
+            if (!data) {
+                chatBox.innerHTML = '<p class="text-gray-500">[Система]: Чат пуст. Напишите первыми!</p>';
+                return;
+            }
+
+            Object.values(data).forEach(msg => {
+                const p = document.createElement('p');
+                p.innerHTML = `<span class="text-gray-500">[${msg.time}]</span> <strong class="text-yellow-300">${escapeHtml(msg.user)}</strong>: <span class="text-gray-200">${escapeHtml(msg.text)}</span>`;
+                chatBox.appendChild(p);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // --- ОСТАЛЬНОЙ СКРИПТ (Скример, Авторизация, Игра) ---
         let glitchedDisabled = false;
 
-        // --- СКРИМЕР (раз в минуту на 1/3 секунды) ---
         function triggerScreamer() {
             if (glitchedDisabled) return;
             const screamer = document.getElementById('screamerOverlay');
             if (!screamer) return;
             screamer.classList.add('active');
-            setTimeout(() => {
-                screamer.classList.remove('active');
-            }, 300);
+            setTimeout(() => { screamer.classList.remove('active'); }, 300);
         }
-
         setInterval(triggerScreamer, 60000);
 
-        // --- ПРОВЕРКА ЛОГИНА И ПАРОЛЯ ---
         function checkAuth() {
             const loginVal = document.getElementById('loginInput').value.trim().toLowerCase();
             const passVal = document.getElementById('passwordInput').value.trim();
-
             const validLogins = ['актёр', 'aktep', 'актер', 'актеп', 'актёп'];
             const validPass = '9288';
 
@@ -572,11 +545,7 @@
                 document.body.classList.remove('glitching');
 
                 const popAudio = document.getElementById('popAudio');
-                if (popAudio) {
-                    popAudio.currentTime = 0;
-                    popAudio.play().catch(e => console.log("Не удалось воспроизвести pop.mp3", e));
-                }
-
+                if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
                 document.getElementById('secretUnlockOverlay').classList.add('active');
             } else {
                 alert("ОШИБКА ДОСТУПА: Неверный логин или пароль!");
@@ -587,15 +556,11 @@
             document.getElementById('secretUnlockOverlay').classList.remove('active');
         }
 
-        // --- РЕГУЛИРОВКА ГРОМКОСТИ ---
         function changeVolume(val) {
             const audio = document.getElementById('bgAudio');
-            if (audio) {
-                audio.volume = parseFloat(val);
-            }
+            if (audio) audio.volume = parseFloat(val);
         }
 
-        // --- VHS-ЭФФЕКТ ---
         const vhsNoise = document.getElementById('vhsNoise');
         function tapeGlitch() {
             if (glitchedDisabled) return;
@@ -607,17 +572,13 @@
             window.setTimeout(() => {
                 if (glitchedDisabled) return;
                 document.body.classList.remove('glitching');
-                if (vhsNoise) {
-                    vhsNoise.style.opacity = '0';
-                    vhsNoise.style.transform = 'none';
-                }
+                if (vhsNoise) { vhsNoise.style.opacity = '0'; vhsNoise.style.transform = 'none'; }
             }, 180 + Math.random() * 220);
         }
         const glitchIntervalId = window.setInterval(() => {
             if (!glitchedDisabled && Math.random() > 0.58) tapeGlitch();
         }, 4200);
 
-        // Убегающая кнопка
         function moveButton() {
             const btn = document.getElementById('runawayBtn');
             const area = document.getElementById('runawayArea');
@@ -626,13 +587,10 @@
             const btnRect = btn.getBoundingClientRect();
             const maxX = areaRect.width - btnRect.width - 20;
             const maxY = areaRect.height - btnRect.height - 10;
-            const newX = Math.max(10, Math.floor(Math.random() * maxX));
-            const newY = Math.max(5, Math.floor(Math.random() * maxY));
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            btn.style.left = Math.max(10, Math.floor(Math.random() * maxX)) + 'px';
+            btn.style.top = Math.max(5, Math.floor(Math.random() * maxY)) + 'px';
         }
 
-        // Музыка
         function toggleAudio() {
             const audio = document.getElementById('bgAudio');
             const btn = document.getElementById('playBtn');
@@ -640,9 +598,7 @@
                 audio.play().then(() => {
                     btn.innerText = "❚❚ ПАУЗА";
                     btn.classList.replace('bg-pink-600', 'bg-green-600');
-                }).catch(err => {
-                    alert("Ошибка воспроизведения audio_не_определён.wav!");
-                });
+                }).catch(err => { alert("Ошибка воспроизведения аудио!"); });
             } else {
                 audio.pause();
                 btn.innerText = "▶ ВОСПРОИЗВЕСТИ";
@@ -650,72 +606,24 @@
             }
         }
 
-        function buySuccess(type) {
-            alert("ОШИБКА ПРОТОКОЛА.\n\nДействие: " + type + "\nФайл добавлен в архив. Источник не подтверждён.");
-        }
-
-        function buyDota() {
-            const item = prompt("Введите код фрагмента для расшифровки:");
-            if (item) alert("ФРАГМЕНТ '" + item + "' принят.");
-        }
-
-        function buyCredit() {
-            confirm("ПРОДОЛЖИТЬ ДОСТУПА?\n\nПосле подтверждения запись нельзя будет считать оригиналом.");
-            alert("Действие подтверждено.");
-        }
-
-        function openEmoCaptcha() {
-            document.getElementById('captchaModal').classList.remove('hidden');
-        }
-
-        function finishCaptcha(isEmo) {
-            document.getElementById('captchaModal').classList.add('hidden');
-            if (isEmo) {
-                alert("Проверка пройдена.\n\nВ журнале появилась новая строка.");
-            } else {
-                alert("ОШИБКА! Актёр опечален вашим ответом.");
-            }
-        }
+        function buySuccess(type) { alert("ОШИБКА ПРОТОКОЛА.\n\nДействие: " + type); }
+        function buyDota() { const item = prompt("Введите код фрагмента:"); if(item) alert("Принято."); }
+        function buyCredit() { confirm("Продолжить доступ?"); alert("Подтверждено."); }
+        function openEmoCaptcha() { document.getElementById('captchaModal').classList.remove('hidden'); }
+        function finishCaptcha(isEmo) { document.getElementById('captchaModal').classList.add('hidden'); }
 
         document.addEventListener('click', (e) => {
             if (e.target.closest('#dinoModal') || e.target.closest('#secretUnlockOverlay')) return;
             const el = document.getElementById('visitorCount');
-            if (el) {
-                let count = parseInt(el.innerText);
-                el.innerText = count + 1;
-            }
+            if (el) el.innerText = parseInt(el.innerText) + 1;
         });
 
-        /* =======================================
-           ИГРА ДИНОЗАВРИК
-        ======================================= */
-        let dinoCanvas, dinoCtx;
-        let dinoAnimationId;
-        let isDinoRunning = false;
-        let dinoScore = 0;
-        let dinoHighScore = 0;
-        let gameWon = false;
-
-        const meImg = new Image();
-        meImg.src = 'me.png';
-
-        const sokImg = new Image();
-        sokImg.src = 'sok.png';
-
-        const player = {
-            x: 30,
-            y: 130,
-            width: 40,
-            height: 40,
-            vy: 0,
-            gravity: 0.6,
-            jumpPower: -11,
-            grounded: true
-        };
-
-        let obstacles = [];
-        let obstacleTimer = 0;
-        let obstacleSpeed = 4;
+        // ДИНОЗАВРИК
+        let dinoCanvas, dinoCtx, dinoAnimationId, isDinoRunning = false, dinoScore = 0, dinoHighScore = 0, gameWon = false;
+        const meImg = new Image(); meImg.src = 'me.png';
+        const sokImg = new Image(); sokImg.src = 'sok.png';
+        const player = { x: 30, y: 130, width: 40, height: 40, vy: 0, gravity: 0.6, jumpPower: -11, grounded: true };
+        let obstacles = [], obstacleTimer = 0, obstacleSpeed = 4;
 
         function openDinoGame() {
             document.getElementById('dinoModal').classList.remove('hidden');
@@ -725,162 +633,78 @@
             window.addEventListener('keydown', handleDinoKeyDown);
             dinoCanvas.addEventListener('click', jumpPlayer);
         }
-
         function closeDinoGame() {
             document.getElementById('dinoModal').classList.add('hidden');
             isDinoRunning = false;
             cancelAnimationFrame(dinoAnimationId);
             window.removeEventListener('keydown', handleDinoKeyDown);
         }
-
-        function handleDinoKeyDown(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                e.preventDefault();
-                jumpPlayer();
-            }
-        }
-
+        function handleDinoKeyDown(e) { if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); jumpPlayer(); } }
         function jumpPlayer() {
-            if (!isDinoRunning) {
-                resetDinoGame();
-                return;
-            }
-            if (player.grounded) {
-                player.vy = player.jumpPower;
-                player.grounded = false;
-            }
+            if (!isDinoRunning) { resetDinoGame(); return; }
+            if (player.grounded) { player.vy = player.jumpPower; player.grounded = false; }
         }
-
         function resetDinoGame() {
-            player.y = 130;
-            player.vy = 0;
-            player.grounded = true;
-            obstacles = [];
-            obstacleTimer = 0;
-            obstacleSpeed = 4;
-            dinoScore = 0;
-            gameWon = false;
-            isDinoRunning = true;
-            cancelAnimationFrame(dinoAnimationId);
-            updateDinoLoop();
+            player.y = 130; player.vy = 0; player.grounded = true;
+            obstacles = []; obstacleTimer = 0; obstacleSpeed = 4;
+            dinoScore = 0; gameWon = false; isDinoRunning = true;
+            cancelAnimationFrame(dinoAnimationId); updateDinoLoop();
         }
-
         function updateDinoLoop() {
             if (!isDinoRunning) return;
-
-            player.vy += player.gravity;
-            player.y += player.vy;
-
-            if (player.y >= 130) {
-                player.y = 130;
-                player.vy = 0;
-                player.grounded = true;
-            }
+            player.vy += player.gravity; player.y += player.vy;
+            if (player.y >= 130) { player.y = 130; player.vy = 0; player.grounded = true; }
 
             obstacleTimer++;
             if (obstacleTimer > 80 + Math.random() * 50) {
-                obstacles.push({
-                    x: dinoCanvas.width,
-                    y: 135,
-                    width: 30,
-                    height: 35
-                });
-                obstacleTimer = 0;
-                obstacleSpeed += 0.05;
+                obstacles.push({ x: dinoCanvas.width, y: 135, width: 30, height: 35 });
+                obstacleTimer = 0; obstacleSpeed += 0.05;
             }
-
-            for (let i = 0; i < obstacles.length; i++) {
-                obstacles[i].x -= obstacleSpeed;
-            }
+            for (let i = 0; i < obstacles.length; i++) obstacles[i].x -= obstacleSpeed;
 
             for (let i = 0; i < obstacles.length; i++) {
                 let obs = obstacles[i];
-                if (
-                    player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height &&
-                    player.y + player.height > obs.y
-                ) {
-                    gameOverDino();
-                    return;
+                if (player.x < obs.x + obs.width && player.x + player.width > obs.x && player.y < obs.y + obs.height && player.y + player.height > obs.y) {
+                    gameOverDino(); return;
                 }
             }
 
             if (obstacles.length > 0 && obstacles[0].x < -30) {
-                obstacles.shift();
-                dinoScore += 10;
+                obstacles.shift(); dinoScore += 10;
                 if (dinoScore > dinoHighScore) dinoHighScore = dinoScore;
                 document.getElementById('dinoScore').innerText = 'СЧЁТ: ' + dinoScore;
                 document.getElementById('dinoHighScore').innerText = 'РЕКОРД: ' + dinoHighScore;
-
-                if (dinoScore >= 100 && !gameWon) {
-                    gameWon = true;
-                    isDinoRunning = false;
-                    winDinoGame();
-                    return;
-                }
+                if (dinoScore >= 100 && !gameWon) { gameWon = true; isDinoRunning = false; winDinoGame(); return; }
             }
 
-            dinoCtx.fillStyle = '#000000';
-            dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+            dinoCtx.fillStyle = '#000000'; dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+            dinoCtx.strokeStyle = '#555555'; dinoCtx.lineWidth = 2;
+            dinoCtx.beginPath(); dinoCtx.moveTo(0, 170); dinoCtx.lineTo(dinoCanvas.width, 170); dinoCtx.stroke();
 
-            dinoCtx.strokeStyle = '#555555';
-            dinoCtx.lineWidth = 2;
-            dinoCtx.beginPath();
-            dinoCtx.moveTo(0, 170);
-            dinoCtx.lineTo(dinoCanvas.width, 170);
-            dinoCtx.stroke();
-
-            if (meImg.complete && meImg.naturalWidth !== 0) {
-                dinoCtx.drawImage(meImg, player.x, player.y, player.width, player.height);
-            } else {
-                dinoCtx.fillStyle = '#ff007f';
-                dinoCtx.fillRect(player.x, player.y, player.width, player.height);
-            }
+            if (meImg.complete && meImg.naturalWidth !== 0) dinoCtx.drawImage(meImg, player.x, player.y, player.width, player.height);
+            else { dinoCtx.fillStyle = '#ff007f'; dinoCtx.fillRect(player.x, player.y, player.width, player.height); }
 
             for (let i = 0; i < obstacles.length; i++) {
                 let obs = obstacles[i];
-                if (sokImg.complete && sokImg.naturalWidth !== 0) {
-                    dinoCtx.drawImage(sokImg, obs.x, obs.y, obs.width, obs.height);
-                } else {
-                    dinoCtx.fillStyle = '#00ffcc';
-                    dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                }
+                if (sokImg.complete && sokImg.naturalWidth !== 0) dinoCtx.drawImage(sokImg, obs.x, obs.y, obs.width, obs.height);
+                else { dinoCtx.fillStyle = '#00ffcc'; dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height); }
             }
-
             dinoAnimationId = requestAnimationFrame(updateDinoLoop);
         }
-
         function gameOverDino() {
             isDinoRunning = false;
-            dinoCtx.fillStyle = 'rgba(255, 0, 0, 0.4)';
-            dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
-            
-            dinoCtx.fillStyle = '#ffffff';
-            dinoCtx.font = 'bold 18px "Share Tech Mono", monospace';
-            dinoCtx.textAlign = 'center';
+            dinoCtx.fillStyle = 'rgba(255, 0, 0, 0.4)'; dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+            dinoCtx.fillStyle = '#ffffff'; dinoCtx.font = 'bold 18px "Share Tech Mono", monospace'; dinoCtx.textAlign = 'center';
             dinoCtx.fillText('GAME OVER', dinoCanvas.width / 2, dinoCanvas.height / 2 - 10);
-            dinoCtx.font = '12px "Share Tech Mono", monospace';
-            dinoCtx.fillText('Нажмите ПРОБЕЛ или ПЕРЕЗАПУСК', dinoCanvas.width / 2, dinoCanvas.height / 2 + 15);
         }
-
         function winDinoGame() {
-            dinoCtx.fillStyle = 'rgba(0, 255, 128, 0.4)';
-            dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
-            
-            dinoCtx.fillStyle = '#ffff00';
-            dinoCtx.font = 'bold 18px "Share Tech Mono", monospace';
-            dinoCtx.textAlign = 'center';
-            dinoCtx.fillText('ПОБЕДА! 100 ОЧКОВ НАБРАНО', dinoCanvas.width / 2, dinoCanvas.height / 2 - 15);
-            
-            dinoCtx.fillStyle = '#ffffff';
-            dinoCtx.font = 'bold 16px "Share Tech Mono", monospace';
+            dinoCtx.fillStyle = 'rgba(0, 255, 128, 0.4)'; dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+            dinoCtx.fillStyle = '#ffff00'; dinoCtx.font = 'bold 18px "Share Tech Mono", monospace'; dinoCtx.textAlign = 'center';
+            dinoCtx.fillText('ПОБЕДА! 100 ОЧКОВ', dinoCanvas.width / 2, dinoCanvas.height / 2 - 15);
+            dinoCtx.fillStyle = '#ffffff'; dinoCtx.font = 'bold 16px "Share Tech Mono", monospace';
             dinoCtx.fillText('Пароль: 9288', dinoCanvas.width / 2, dinoCanvas.height / 2 + 15);
         }
-
-        window.onload = () => {
-            moveButton();
-        };
+        window.onload = () => { moveButton(); };
     </script>
 </body>
 </html>
