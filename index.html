@@ -74,7 +74,7 @@
         .btn-2007:active, .btn-green:active { background:#444 !important; border-style:inset; }
         .runaway-btn { position:absolute; transition:all .15s ease-out; z-index:50; }
         .floating-qr { animation:signalFloat 4s steps(2,end) infinite; }
-        img { filter: none contrast(1.15) brightness(.82); }
+        img, video { filter: none contrast(1.15) brightness(.82); }
         a, button, select { transition:filter .15s ease,border-color .15s ease; }
         a:hover, button:hover { filter:brightness(1.5); }
         button { border-radius:1px !important; }
@@ -260,9 +260,10 @@
                 </ul>
             </div>
 
+            <!-- ИЗМЕНЕНО: Вместо QR-кода теперь видео add.mp4 -->
             <div class="bg-black p-3 border-2 border-pink-500 text-center rounded">
                 <p class="text-pink-400 font-bold mb-1">ФРАГМЕНТ ЗАПИСИ</p>
-                <img src="qr.png" alt="QR" class="w-28 h-28 mx-auto border border-cyan-400 my-1" onerror="this.onerror=null; this.src='https://placehold.co/120x120/000/fff?text=QR';">
+                <video src="add.mp4" autoplay muted loop playsinline width="672" height="480" class="w-full h-auto mx-auto border border-cyan-400 my-1 object-cover" onerror="this.outerHTML='<div class=\'w-full h-28 flex items-center justify-center bg-black border border-red-500 text-red-400 text-[10px]\'>add.mp4 не найден</div>';"></video>
                 <p class="text-[9px] text-gray-400">Источник не подтверждён</p>
             </div>
 
@@ -507,7 +508,6 @@
             for (let i = 0; i < username.length; i++) {
                 hash = username.charCodeAt(i) + ((hash << 5) - hash);
             }
-            // Используем цветовой тон (hue) от 0 до 360, фиксированную насыщенность и яркость для читаемости
             const hue = Math.abs(hash) % 360;
             return `hsl(${hue}, 85%, 65%)`;
         }
@@ -547,7 +547,6 @@
                 const cleanUser = escapeHtml(msg.user);
                 
                 let userHtml = '';
-                // Проверяем, является ли ник "МОДЕРАТОР" (без учета регистра)
                 if (cleanUser.toLowerCase() === 'модератор') {
                     userHtml = `<strong class="mod-glitch-nickname">${cleanUser}</strong>`;
                 } else {
