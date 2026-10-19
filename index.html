@@ -15,7 +15,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap');
         :root { --blood:#777; --rust:#333; --static:#ddd; --dim:#888; --void:#050505; }
         * { box-sizing:border-box; }
-        html { background:#030303; }
+        html { background:#030303; scroll-behavior: smooth; }
         body {
             background:
               radial-gradient(ellipse at 50% 18%, rgba(255,255,255,.055), transparent 58%),
@@ -139,6 +139,38 @@
             text-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
         }
 
+        /* Стили для построчного появления текста песни */
+        .lyrics-line {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out, filter 0.8s ease-out;
+            filter: blur(6px);
+        }
+
+        .lyrics-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0px);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7), 0 0 30px rgba(255, 0, 85, 0.5);
+        }
+
+        /* Анимация глитча для фоновых картинок песни */
+        .song-bg-img {
+            opacity: 0.4;
+            animation: imageGlitchAnim 2.5s infinite steps(1, end);
+        }
+
+        @keyframes imageGlitchAnim {
+            0% { transform: translate(0, 0) scale(1); filter: hue-rotate(0deg); opacity: 0.4; }
+            10% { transform: translate(-3px, 2px) scale(1.02); filter: hue-rotate(45deg) contrast(1.5); opacity: 0.35; }
+            15% { transform: translate(2px, -2px) scale(0.98); filter: hue-rotate(0deg); opacity: 0.45; }
+            30% { transform: translate(0, 0) scale(1); filter: none; opacity: 0.4; }
+            60% { transform: translate(4px, 1px) skewX(2deg); filter: invert(0.1); opacity: 0.3; }
+            65% { transform: translate(-2px, -1px); filter: none; opacity: 0.4; }
+            85% { transform: translate(-4px, 3px) scale(1.01); filter: hue-rotate(-30deg); opacity: 0.38; }
+            100% { transform: translate(0, 0) scale(1); filter: none; opacity: 0.4; }
+        }
+
         @keyframes modShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             20% { transform: translate(-2px, 2px) rotate(-1deg); }
@@ -176,6 +208,19 @@
 </head>
 <body class="p-2 md:p-6 min-h-screen flex flex-col items-center justify-between relative">
     <div class="vhs-noise" id="vhsNoise" aria-hidden="true"></div>
+
+    <!-- ФИКСИРОВАННЫЙ БЛОК ПЛЕЕРА В ЛЕВОМ ВЕРХНЕМ УГЛУ (Только для ПК) -->
+    <div class="hidden md:flex fixed top-4 left-4 z-50 bg-black/90 border-2 border-cyan-400 p-2 flex-col items-center rounded shadow-[0_0_15px_rgba(0,255,255,0.3)]">
+        <span class="text-[10px] text-cyan-300 pixel-font mb-1">КАССЕТА:</span>
+        <span class="text-[10px] text-yellow-400 truncate max-w-[140px] mb-1">audio_не_определён.wav</span>
+        <button onclick="toggleAudio()" id="playBtn" class="bg-pink-600 text-white text-xs px-3 py-1 rounded border border-white hover:bg-pink-500 font-bold mb-2">
+            ▶ ВОСПРОИЗВЕСТИ
+        </button>
+        <div class="flex items-center space-x-1 text-[9px] text-cyan-300">
+            <span>ГРОМК:</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-20 cursor-pointer accent-pink-500">
+        </div>
+    </div>
 
     <div id="screamerOverlay">
         <img src="by.jpg" alt="Screamer" onerror="this.src='https://placehold.co/800x600/ff0000/fff?text=BY.JPG+NOT+FOUND';">
@@ -241,15 +286,7 @@
             </marquee>
         </div>
 
-        <div class="retro-box p-4 text-center rounded-lg relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-2">
-                <img src="qr.png" alt="QR" class="w-16 h-16 border-2 border-pink-500 hidden sm:block" onerror="this.onerror=null; this.src='https://placehold.co/80x80/000/fff?text=QR';">
-                <div class="text-left">
-                    <span class="text-[10px] text-yellow-400 font-bold">НЕИЗВЕСТНЫЙ ИСТОЧНИК</span>
-                    <p class="text-[9px] text-gray-400">Не приближай экран</p>
-                </div>
-            </div>
-
+        <div class="retro-box p-6 text-center rounded-lg relative overflow-hidden flex flex-col items-center justify-center gap-2">
             <div>
                 <h1 class="text-3xl md:text-5xl font-extrabold rainbow-text tracking-wider mb-2">
                     Носки AKTEP
@@ -259,16 +296,13 @@
                 </p>
             </div>
 
-            <div class="bg-gray-900 border-2 border-cyan-400 p-2 flex flex-col items-center rounded">
+            <!-- Мобильный дублер плеера (скрыт на десктопе, виден на мобильных) -->
+            <div class="bg-gray-900 border-2 border-cyan-400 p-2 flex flex-col items-center rounded md:hidden w-full mt-2">
                 <span class="text-[10px] text-cyan-300 pixel-font mb-1">КАССЕТА:</span>
                 <span class="text-[10px] text-yellow-400 truncate max-w-[140px] mb-1">audio_не_определён.wav</span>
-                <button onclick="toggleAudio()" id="playBtn" class="bg-pink-600 text-white text-xs px-3 py-1 rounded border border-white hover:bg-pink-500 font-bold mb-2">
+                <button onclick="toggleAudio()" class="mobilePlayBtn bg-pink-600 text-white text-xs px-3 py-1 rounded border border-white font-bold mb-2">
                     ▶ ВОСПРОИЗВЕСТИ
                 </button>
-                <div class="flex items-center space-x-1 text-[9px] text-cyan-300">
-                    <span>ГРОМК:</span>
-                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-20 cursor-pointer accent-pink-500">
-                </div>
             </div>
         </div>
     </header>
@@ -395,10 +429,6 @@
                             Акция
                         </div>
                         <img src="sok.png" alt="Эмо носки в полоску" class="max-w-full h-auto max-h-[240px] object-contain drop-shadow-[0_0_12px_rgba(255,0,21,0.8)]" onerror="this.onerror=null; this.src='https://placehold.co/200x260/000000/ff007f?text=sok.png+не+найден';">
-                        <div class="mt-2 flex items-center space-x-2 bg-gray-900 p-1 border border-pink-400 w-full justify-center">
-                            <img src="qr.png" alt="QR" class="w-8 h-8" onerror="this.onerror=null; this.src='https://placehold.co/40x40/000/fff?text=QR';">
-                            <span class="text-[9px] text-yellow-300">ФАЙЛ ПОВРЕЖДЁН</span>
-                        </div>
                     </div>
 
                     <div class="space-y-3">
@@ -525,6 +555,61 @@
         </div>
     </section>
 
+    <!-- === ТЕКСТ ПЕСНИ С ГЛИТЧУЮЩИМИ ФОНОВЫМИ КАРТИНКАМИ === -->
+    <section class="w-full max-w-5xl my-24 flex flex-col items-center">
+        <!-- Кнопка включения кассеты в начале текста -->
+        <div class="mb-20 flex flex-col items-center text-center">
+            <button onclick="toggleAudio()" class="playBtnMain bg-pink-600 text-white text-sm px-6 py-3 rounded border-2 border-white hover:bg-pink-500 font-bold shadow-[0_0_20px_rgba(255,0,85,0.7)] transition-transform hover:scale-105 cursor-pointer mb-2">
+                ▶ ВОСПРОИЗВЕСТИ КАССЕТУ
+            </button>
+            <span class="text-xs text-cyan-300 blink">↓ Листайте вниз для воспроизведения текста ↓</span>
+        </div>
+        
+        <!-- Строка 1 (с 1.png) -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <img src="1.png" alt="" class="song-bg-img absolute inset-0 mx-auto my-auto max-h-[450px] w-auto object-contain pointer-events-none z-[-1]" onerror="this.style.display='none';">
+            <span class="relative z-10">Помехи и сигналы бегут по проводам</span>
+        </div>
+
+        <!-- Строка 2 -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <span class="relative z-10">Идёт дешёвая реклама тем, кто хочет продавать</span>
+        </div>
+
+        <!-- Строка 3 (с 3.png) -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <img src="3.png" alt="" class="song-bg-img absolute inset-0 mx-auto my-auto max-h-[450px] w-auto object-contain pointer-events-none z-[-1]" onerror="this.style.display='none';">
+            <span class="relative z-10">Напитки и носки, кисломолочку и текстиль</span>
+        </div>
+
+        <!-- Строка 4 (Первое упоминание «Я открываю телевизор...») -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <span class="relative z-10">Я открываю телевизор, чтобы-чтобы всё забыть</span>
+        </div>
+
+        <!-- Строка 5 (Второе упоминание «Я открываю телевизор...» — с 5.png) -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <img src="5.png" alt="" class="song-bg-img absolute inset-0 mx-auto my-auto max-h-[450px] w-auto object-contain pointer-events-none z-[-1]" onerror="this.style.display='none';">
+            <span class="relative z-10">Я открываю телевизор, чтобы-чтобы всё забыть</span>
+        </div>
+
+        <!-- Строка 6 -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <span class="relative z-10">Я жму кнопки на пульте, меня протыкает шпиль радиоволны</span>
+        </div>
+
+        <!-- Строка 7 (с 7.png) -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-xl md:text-3xl font-extrabold text-cyan-300 relative">
+            <img src="7.png" alt="" class="song-bg-img absolute inset-0 mx-auto my-auto max-h-[450px] w-auto object-contain pointer-events-none z-[-1]" onerror="this.style.display='none';">
+            <span class="relative z-10">Пока я не отупел и мои конечности не проросли</span>
+        </div>
+
+        <!-- Строка 8 -->
+        <div class="lyrics-line w-full text-center py-[40vh] text-2xl md:text-4xl font-black text-pink-500 uppercase tracking-widest relative">
+            <span class="relative z-10">Проросли</span>
+        </div>
+    </section>
+
     <footer class="w-full max-w-5xl text-center text-[11px] text-gray-500 py-6 border-t border-pink-900 flex flex-col items-center space-y-3">
         <div class="flex items-center space-x-4">
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
@@ -532,7 +617,7 @@
             <img src="qr.png" alt="QR" class="w-12 h-12 border border-pink-500" onerror="this.onerror=null; this.src='https://placehold.co/60x60/000/fff?text=QR';">
         </div>
         <p>© ARCHIVE 07-Биба // КОПИЯ НЕ СОВПАДАЕТ С ОРИГИНАЛОМ</p>
-        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.4a</p>
+        <p class="text-pink-600">Архивная копия. Источник не установлен. Версия сайта 1.5</p>
     </footer>
 
     <!-- Модалки -->
@@ -671,7 +756,6 @@
             const loginVal = document.getElementById('loginInput').value.trim();
             const passVal = document.getElementById('passwordInput').value.trim();
             
-            // Также поддерживаем старый логин/пароль на случай если нужен
             const validLogins = ['актёр', 'aktep', 'актер', 'актеп', 'актёп'];
             const validPass = '9288';
 
@@ -685,7 +769,6 @@
                 const popAudio = document.getElementById('popAudio');
                 if (popAudio) { popAudio.currentTime = 0; popAudio.play().catch(e => {}); }
                 
-                // Показываем секретную картинку secret.png
                 document.getElementById('customSecretOverlay').classList.add('active');
 
                 db.ref('messages').push({
@@ -761,15 +844,20 @@
         function toggleAudio() {
             const audio = document.getElementById('bgAudio');
             const btn = document.getElementById('playBtn');
+            const btnMain = document.querySelector('.playBtnMain');
+            const mobileBtn = document.querySelector('.mobilePlayBtn');
+
             if (audio.paused) {
                 audio.play().then(() => {
-                    btn.innerText = "❚❚ ПАУЗА";
-                    btn.classList.replace('bg-pink-600', 'bg-green-600');
+                    if (btn) { btn.innerText = "❚❚ ПАУЗА"; btn.classList.replace('bg-pink-600', 'bg-green-600'); }
+                    if (btnMain) { btnMain.innerText = "❚❚ ПАУЗА"; btnMain.classList.replace('bg-pink-600', 'bg-green-600'); }
+                    if (mobileBtn) { mobileBtn.innerText = "❚❚ ПАУЗА"; mobileBtn.classList.replace('bg-pink-600', 'bg-green-600'); }
                 }).catch(err => { alert("Ошибка воспроизведения аудио!"); });
             } else {
                 audio.pause();
-                btn.innerText = "▶ ВОСПРОИЗВЕСТИ";
-                btn.classList.replace('bg-green-600', 'bg-pink-600');
+                if (btn) { btn.innerText = "▶ ВОСПРОИЗВЕСТИ"; btn.classList.replace('bg-green-600', 'bg-pink-600'); }
+                if (btnMain) { btnMain.innerText = "▶ ВОСПРОИЗВЕСТИ КАССЕТУ"; btnMain.classList.replace('bg-green-600', 'bg-pink-600'); }
+                if (mobileBtn) { mobileBtn.innerText = "▶ ВОСПРОИЗВЕСТИ"; mobileBtn.classList.replace('bg-green-600', 'bg-pink-600'); }
             }
         }
 
@@ -1271,7 +1359,30 @@
             dinoCtx.fillStyle = '#ffffff'; dinoCtx.font = 'bold 16px "Share Tech Mono", monospace';
             dinoCtx.fillText('Пароль: 9288', dinoCanvas.width / 2, dinoCanvas.height / 2 + 15);
         }
-        window.onload = () => { moveButton(); };
+
+        // --- IntersectionObserver для появления строк по очереди при скролле ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -20% 0px',
+            threshold: 0.5
+        };
+
+        const lyricsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+
+        window.onload = () => { 
+            moveButton(); 
+            document.querySelectorAll('.lyrics-line').forEach(line => {
+                lyricsObserver.observe(line);
+            });
+        };
     </script>
 </body>
 </html>
